@@ -8,15 +8,15 @@ import datetime as dt
 
 import youtube_dl
 
-OUTPUT_DIR = f"Downloads/{dt.datetime.strftime(dt.datetime.now(),'%d_%m_%y')}"
+OUTPUT_DIR = "Downloads"
+DATE=dt.datetime.strftime(dt.datetime.now(),'%d_%m_%y')
 SIMPLE_FORMAT=f"%(title)s.%(ext)s"
 YDL_OPTS = {
 		'format': 'bestaudio/best',
 		'postprocessors': [{'key': 'FFmpegExtractAudio',
 							'preferredcodec': 'mp3',
 							}],
-		# 'preferredquality': '320' upsamples!							
-		'outtmpl':  f"{OUTPUT_DIR}/{SIMPLE_FORMAT}",
+		# 'preferredquality': '320' upsamples!
 	}
 
 # TODO: optional playlist argument
@@ -35,7 +35,9 @@ if __name__ == '__main__':
 	# If user specified a directory, overwrite the default
 	if args.output!='': 
 		OUTPUT_DIR=args.output
-		YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}"
+	else:
+		OUTPUT_DIR=f"{OUTPUT_DIR}/{DATE}"
+	YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}"
 	# Create the Output Directory
 	os.makedirs(OUTPUT_DIR, exist_ok=True)
 	if args.verbose:
