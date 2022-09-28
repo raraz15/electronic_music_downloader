@@ -99,4 +99,4 @@ if __name__ == "__main__":
     playlist_dir=os.path.join(PLAYLIST_DIR, '{}.json'.format(args.name))
     print('\nExporting the playlist to:\n{}'.format(playlist_dir))
     with open(playlist_dir, 'w') as outfile:
-        json.dump(track_dicts, outfile, indent=4)                                  
+        json.dump(track_dicts, outfile, indent=4)                               
