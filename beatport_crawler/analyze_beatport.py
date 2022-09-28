@@ -237,6 +237,10 @@ if __name__ == '__main__':
     parser.add_argument('-N', type=int, default=10, help='Number of top entries to display.')
     args=parser.parse_args()
 
+    # Get the Genre Name from the URL
+    genre=args.url.split("/")[-3]
+    print(f"{genre.replace('-',' ').title()} - Top 100")
+
     # Extract the track information
     tracks_garbage=create_tracks_garbage(args.url)
     tracks={idx: create_track_dict(track, idx)  for idx,track in enumerate(tracks_garbage)}
@@ -250,12 +254,11 @@ if __name__ == '__main__':
         OUTPUT_DIR=os.path.join(OUTPUT_DIR,DATE)
 	# Create the Output Directory
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    
     # Export to json
-    output_path=os.path.join(OUTPUT_DIR,'Beatport_Top100')
+    output_path=os.path.join(OUTPUT_DIR,f'Beatport_{genre}_Top100')
     with open(output_path,'w', encoding='utf8') as outfile:
         json.dump(tracks, outfile, indent=4)
-    print(f"\nExported to: {output_path}")
+    print(f"Exported to: {output_path}\n")
 
     # Pretty Print Top N
     max_title_len=max([len(track['Title']) for i,track in enumerate(tracks.values()) if i<args.N])
