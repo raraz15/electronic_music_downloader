@@ -207,7 +207,7 @@ if __name__ == '__main__':
         key_dict[track['Key']] += 1
         label_dict[track['Label']] += 1
         for artist in track['Artist(s)'].split(','):
-            artist_dict[artist] += 1             
+            artist_dict[artist.replace("$$","\$\$")] += 1  # One artist' name included $$ which was bad for OS           
         if 'Remixer(s)' in track:
             remix_dict['remix'] += 1
         else:
