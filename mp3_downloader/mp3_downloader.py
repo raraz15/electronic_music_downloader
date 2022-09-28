@@ -41,7 +41,7 @@ if __name__ == '__main__':
 	# Create the Output Directory
 	os.makedirs(OUTPUT_DIR, exist_ok=True)
 	if args.verbose:
-		print(f"Track(s) will be downloaded to: {OUTPUT_DIR}\n")
+		print(f"Track(s) will be downloaded to: {OUTPUT_DIR}")
 
 	# Flatten the links if its a playlist
 	links=[]
