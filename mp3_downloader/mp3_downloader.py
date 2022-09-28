@@ -15,7 +15,7 @@ YDL_OPTS = {
 							'preferredcodec': 'mp3',
 							'preferredquality': '320'}],
 		'outtmpl':  f"{OUTPUT_DIR}/{SIMPLE_FORMAT}",
-	}
+	}	
 
 # TODO: raise warning if quality not 320
 # TODO: download each track's youtube description in a text file ?
@@ -25,16 +25,17 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Youtube mp3 downloader.')
 	parser.add_argument('-l', '--link', type=str, required=True, help='Youtube Playlist/Track link.')
 	parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
+	parser.add_argument('-v', '--verbose', action='store_true', help='Control printing.')
 	args = parser.parse_args()
 
 	# If user specified a directory, overwrite the default
 	if args.output!='': 
 		OUTPUT_DIR=args.output
 		YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}"
-
 	# Create the Output Directory
 	os.makedirs(OUTPUT_DIR, exist_ok=True)
-	print(f"Tracks will be downloaded to: {OUTPUT_DIR}\n")
+	if args.verbose:
+		print(f"Track(s) will be downloaded to: {OUTPUT_DIR}\n")
 
 	# Flatten the links if its a playlist
 	links=[]
@@ -46,12 +47,10 @@ if __name__ == '__main__':
 			print("Flattened the playlist.")
 		else:
 			links=[args.link] # Single track
-
-	print('\nFormatting and Downloading...')
+	#if args.verbose:
+	#	print('\nFormatting and Downloading...')
 	for link in links:
-
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
-
 			# Get information to determine name formatting
 			info_dict=ydl.extract_info(link, download=False)
 			# Check the audio sampling rate
@@ -60,7 +59,6 @@ if __name__ == '__main__':
 				continue			
 			artist=info_dict.get('artist', None)
 			track=info_dict.get('track', None)
-
 			# Change the formatting if artist and track name is specified
 			if (artist is not None) and (track is not None):
 				form="%(artist)s - %(track)s.%(ext)s"
@@ -72,14 +70,12 @@ if __name__ == '__main__':
 					print(f"Erron on: {link}")
 				print("")
 				continue
-
 		# Set the new format and Download
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			try:
 				ydl.download([link])
 			except:
 				print(f"Erron on: {link}")
-			print("")
-
 		# Go back to the default format
-		YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}" 
+		YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}"
+		print("")
