@@ -2,6 +2,8 @@
 
 A repository for downloading high quality electronic music from YouTube with Spotify and Beatport crawling capacities.
 
+### TODO: Update the environment file
+
 1) Create the Environment:
 
     conda create --name myenv --file requirements.txt
