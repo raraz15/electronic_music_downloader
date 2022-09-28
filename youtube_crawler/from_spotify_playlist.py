@@ -9,9 +9,6 @@ from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 
 from youtubesearchpython import VideosSearch
-#!pip install youtube-search-python 
-
-#from search_chart import duration_str_to_int
 
 # Default download directories
 PLAYLISTS_DIR='Playlists'
@@ -131,7 +128,7 @@ def get_all_links_and_queries(chart_dict, N=10, conservative=False):
             future=executor.submit(find_link_single_track, track_dict, N, conservative)
             if (future.result() is not None) and future.result()[0]: # if non-empty link
                 query_dict[i]={**track_dict, **{'Link': future.result()[0], 'Query': future.result()[1]}}
-    print("\n{} links are returned in total.".format(len(query_dict)))
+    print("{} links are returned in total.".format(len(query_dict)))
     return query_dict
 
 

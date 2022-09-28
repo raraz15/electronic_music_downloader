@@ -98,9 +98,9 @@ if __name__ == "__main__":
                                     'Images': album['images'],
                                     'Popularity': track['popularity']
                                     }
-    print('\n{} tracks are returned.'.format(len(track_dicts)))
+    print(f"{len(track_dicts)} Tracks' information is returned.")
     # Export the track dicts in a json file
     playlist_dir=os.path.join(PLAYLIST_DIR, '{}.json'.format(args.name))
-    print('\nExporting the playlist to:\n{}'.format(playlist_dir))
+    print(f'Exporting the playlist to: {playlist_dir}')
     with open(playlist_dir, 'w') as outfile:
         json.dump(track_dicts, outfile, indent=4)                               
