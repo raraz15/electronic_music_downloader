@@ -159,8 +159,8 @@ def create_track_dict(track, idx):
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Beatport Top100 Analyzer')
-    parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
     parser.add_argument('-u', '--url', type=str, required=True, help='URL of the Top100 site.')
+    parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
     parser.add_argument('-N', type=int, default=10, help='Number of top entries to display.')
     parser.add_argument('--figure', action='store_true', help='Plot the figures.')
     args=parser.parse_args()
