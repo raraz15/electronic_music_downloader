@@ -166,9 +166,10 @@ if __name__ == '__main__':
     args=parser.parse_args()
 
     # Get the Genre Name from the URL
-    genre=args.url.split("/")[-3]
-    CHART_NAME=f'Beatport_{genre}_Top100'
-    print(f"{genre.replace('-',' ').title()} - Top 100")
+    genre=args.url.split("/")[-3].title()
+    CHART_NAME=f"Beatport-{genre.replace('-','_')}-Top100"
+    SIMPLE_NAME=genre.replace('-',' ') # For Plotting
+    print(f"{SIMPLE_NAME} - Top 100")
 
     # Extract the track information
     tracks_garbage=create_tracks_garbage(args.url)
@@ -184,7 +185,7 @@ if __name__ == '__main__':
 	# Create the Output Directory
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     # Export to json
-    output_path=os.path.join(OUTPUT_DIR,CHART_NAME)
+    output_path=os.path.join(OUTPUT_DIR,CHART_NAME+".json")
     with open(output_path,'w', encoding='utf8') as outfile:
         json.dump(tracks, outfile, indent=4)
     print(f"Exported to: {output_path}\n")
@@ -230,6 +231,7 @@ if __name__ == '__main__':
         ax.pie(remix_dict.values(), explode=explode, labels=labels, autopct='%1.1f%%',
                 shadow=True, startangle=90, textprops={'fontsize': 15})
         ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Remix Distribution",fontsize=14)
         fig0.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Remix_Distribution.png"))
         plt.draw()   
 
@@ -237,7 +239,7 @@ if __name__ == '__main__':
         ax.bar(artist_dict.keys(), artist_dict.values())
         ax.set_ylabel('Number of Appearances',fontsize=15)
         ax.set_xlabel('Artist',fontsize=15)
-        ax.set_title('Beatport TOP100 Artist Distribution',fontsize=14)
+        ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Artist Distribution",fontsize=14)
         plt.xticks(rotation = 90)
         fig.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Artist_Distribution.png"))
         plt.draw()    
@@ -246,7 +248,7 @@ if __name__ == '__main__':
         ax.bar(key_dict.keys(), key_dict.values())
         ax.set_ylabel('Number of Tracks',fontsize=15)
         ax.set_xlabel('Track Key',fontsize=15)
-        ax.set_title('Beatport TOP100 Key Distribution',fontsize=14)
+        ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Key Distribution",fontsize=14)
         fig.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Key_Distribution.png"))    
         plt.draw()  
 
@@ -254,7 +256,7 @@ if __name__ == '__main__':
         ax.bar(bpm_dict.keys(), bpm_dict.values())
         ax.set_ylabel('Number of Tracks',fontsize=15)
         ax.set_xlabel('Track BPM',fontsize=15)
-        ax.set_title('Beatport TOP100 BPM Distribution',fontsize=14)
+        ax.set_title(f"Beatport {SIMPLE_NAME} Top100 BPM Distribution",fontsize=14)
         fig.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-BPM_Distribution.png"))    
         plt.draw()   
 
@@ -262,7 +264,7 @@ if __name__ == '__main__':
         ax.bar(label_dict.keys(), label_dict.values())
         ax.set_ylabel('Number of Tracks',fontsize=15)
         ax.set_xlabel('Label Name',fontsize=15)
-        ax.set_title('Beatport TOP100 Label Distribution',fontsize=14)
+        ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Label Distribution",fontsize=14)
         plt.xticks(rotation = 90)
         fig.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Label_Distribution.png"))    
         plt.draw()
