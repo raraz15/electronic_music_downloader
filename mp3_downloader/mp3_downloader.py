@@ -19,16 +19,13 @@ YDL_OPTS = {
 		# 'preferredquality': '320' upsamples!
 	}
 
-# TODO: optional playlist argument
 # TODO: raise warning if quality not 320
-# TODO: download each track's youtube description in a text file ?
 # TODO: faster flattening
 if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser(description='Youtube mp3 downloader.')
 	parser.add_argument('-l', '--link', type=str, required=True, help='Youtube Playlist/Track link.')
 	parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
-	#parser.add_argument('--playlist', action='store_true', help='Optional playlist indicator.')
 	parser.add_argument('-v', '--verbose', action='store_true', help='Control printing.')
 	args = parser.parse_args()
 
