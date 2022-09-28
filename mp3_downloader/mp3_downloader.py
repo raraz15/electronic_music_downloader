@@ -39,13 +39,13 @@ if __name__ == '__main__':
 	# Flatten the links if its a playlist
 	links=[]
 	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl: # Get all the individual links
-		result=ydl.extract_info(args.source, download=False)
+		result=ydl.extract_info(args.link, download=False)
 		if 'entries' in result: # Playlist
 			for i,item in enumerate(result['entries']):
 				links.append(result['entries'][i]['webpage_url'])
 			print("Flattened the playlist.")
 		else:
-			links=[args.source] # Single track
+			links=[args.link] # Single track
 
 	print('\nFormatting and Downloading...')
 	for link in links:
