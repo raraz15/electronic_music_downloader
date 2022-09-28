@@ -264,7 +264,7 @@ if __name__ == '__main__':
     max_title_len=max([len(track['Title']) for i,track in enumerate(tracks.values()) if i<args.N])
     max_artist_len=max([len(track['Artist(s)']) for i,track in enumerate(tracks.values()) if i<args.N])
     print(f"Top {args.N} Tracks:")
-    print(f"| {'#':>2} | {'Title':<{max_title_len}} | {'Artist(s)':<{max_artist_len}} |")
+    print(f"| {'#':>2} | {'Title':^{max_title_len}s} | {'Artist(s)':^{max_artist_len}s} |")
     print("-"*(3+3+2+3+1+max_title_len+max_artist_len))
     for i in range(args.N):
         title=tracks[i]['Title']
