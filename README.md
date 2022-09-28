@@ -2,7 +2,9 @@
 
 A repository for downloading high quality electronic music from YouTube with Spotify and Beatport crawling capacities.
 
-### TODO: Update the environment file
+### TODO: 
+    Update the environment file
+    Path of the dummy client info        
 
 1) Create the Environment:
 

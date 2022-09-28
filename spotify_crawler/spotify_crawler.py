@@ -6,7 +6,7 @@ import datetime as dt
 import json
 
 # Information of the Spotify User is stored in this file
-CLIENT_INFO_PATH="spotify_client_info.json"
+CLIENT_INFO_PATH="/Users/recep_oguz_araz/Desktop/Projects/spotify_client_info.json"
 # Some defaults
 AUTH_URL='https://accounts.spotify.com/api/token'
 DEFAULT_NAME=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%y")
