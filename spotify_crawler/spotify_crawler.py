@@ -5,17 +5,19 @@ import argparse
 import datetime as dt
 import json
 
-# Information of the Spotify User is stored in this file
-CLIENT_INFO_PATH="/Users/recep_oguz_araz/Desktop/Projects/spotify_client_info.json"
-# Some defaults
 AUTH_URL='https://accounts.spotify.com/api/token'
 DEFAULT_NAME=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%y")
 PLAYLIST_DIR='Playlists'
 
-def name_formatter(name, artists):
+# Information of the Spotify User is stored in this file
+CLIENT_INFO_PATH="/Users/recep_oguz_araz/Desktop/Projects/spotify_client_info.json"
+
+def title_formater(name, artists):
+    """ Puts the Artist, Track Title, Mix Type information in a standard format"""
 
     artists=', '.join(artists)
 
+    # Find the type of mix (Extended, Original, Club,...)
     mix_search=re.search(r"\s-\s.*?mix", name.lower())
     if mix_search:
         mix=name[mix_search.start():mix_search.end()]
@@ -24,6 +26,7 @@ def name_formatter(name, artists):
     else:
         mix=''
 
+    # Find out if its some artist's edit
     edit_search=re.search(r"\s-\s.*?edit", name.lower())
     if edit_search:
         edit=name[edit_search.start():edit_search.end()]
@@ -31,7 +34,8 @@ def name_formatter(name, artists):
         name=name[:edit_search.start()] + name[edit_search.end():] # remove the match from the string
     else:
         edit=''
-
+    
+    # Combine everything
     title='{} - {}'.format(artists, name)
     if mix:
         title += ' ({})'.format(mix)
@@ -85,7 +89,7 @@ if __name__ == "__main__":
             track_name=track['name'] # string
             album=track['album'] # dict
             artist_names=[artist_dict['name'] for artist_dict in artists]
-            track_dicts[track_name]={'Title': name_formatter(track_name, artist_names),
+            track_dicts[track_name]={'Title': title_formater(track_name, artist_names),
                                     'Artist(s)': artist_names,
                                     'Album Name': album['name'],
                                     'Album Type': album['type'],
