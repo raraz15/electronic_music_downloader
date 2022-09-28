@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import os
+import os,sys
+import traceback
 import argparse
 import datetime as dt
 
@@ -15,8 +16,9 @@ YDL_OPTS = {
 							'preferredcodec': 'mp3',
 							'preferredquality': '320'}],
 		'outtmpl':  f"{OUTPUT_DIR}/{SIMPLE_FORMAT}",
-	}	
+	}
 
+# TODO: optional playlist argument
 # TODO: raise warning if quality not 320
 # TODO: download each track's youtube description in a text file ?
 # TODO: faster flattening
@@ -47,8 +49,6 @@ if __name__ == '__main__':
 			print("Flattened the playlist.")
 		else:
 			links=[args.link] # Single track
-	#if args.verbose:
-	#	print('\nFormatting and Downloading...')
 	for link in links:
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			# Get information to determine name formatting
@@ -63,19 +63,27 @@ if __name__ == '__main__':
 			if (artist is not None) and (track is not None):
 				form="%(artist)s - %(track)s.%(ext)s"
 				YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{form}"
-			else: # Download with the current format
+			else: # Attempt download with the current format
 				try:
 					ydl.download([link])
-				except:
-					print(f"Erron on: {link}")
+				except KeyboardInterrupt:
+					sys.exit(1)				
+				except Exception as ex:     
+					print(f"There was an error on: {link}")
+					exception_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
+					print(exception_str)
 				print("")
 				continue
 		# Set the new format and Download
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			try:
 				ydl.download([link])
-			except:
-				print(f"Erron on: {link}")
+			except KeyboardInterrupt:
+				sys.exit(1)				
+			except Exception as ex:     
+				print(f"There was an error on: {link}")
+				exception_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
+				print(exception_str)
 		# Go back to the default format
 		YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}"
 		print("")
