@@ -14,7 +14,8 @@ YDL_OPTS = {
 		'format': 'bestaudio/best',
 		'postprocessors': [{'key': 'FFmpegExtractAudio',
 							'preferredcodec': 'mp3',
-							'preferredquality': '320'}],
+							}],
+		# 'preferredquality': '320' upsamples!							
 		'outtmpl':  f"{OUTPUT_DIR}/{SIMPLE_FORMAT}",
 	}
 
