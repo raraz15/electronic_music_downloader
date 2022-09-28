@@ -11,12 +11,20 @@ import numpy as np
 from youtubesearchpython import VideosSearch
 #!pip install youtube-search-python 
 
-from search_chart import duration_str_to_int
+#from search_chart import duration_str_to_int
 
 # Default download directories
 PLAYLISTS_DIR='Playlists'
 QUERY_DIR='Queries'
 
+def duration_str_to_int(duration_str):
+    s = duration_str[-2:]
+    m = duration_str[-5:-3]
+    duration = int(s) + 60*int(m)    
+    if len(duration_str.split(':'))>2:
+        h = int(duration_str[:duration_str.index(':')])
+        duration += 3600*h
+    return duration
 
 # TODO: artist list search?
 def get_best_link_for_track(customSearch, query, artists_list, audio_duration, conservative=False):
@@ -119,25 +127,17 @@ def get_all_links_and_queries(chart_dict, N=10, conservative=False):
 
     query_dict={}
     with ThreadPoolExecutor(max_workers=16) as executor:
-   
         for i, track_dict in enumerate(chart_dict.values()):
-        
-            #if not i % 100:
-            #    print('\n{:.1f}% ({}/{})'.format(100*(i)/len(chart_dict), i, len(chart_dict)))
-
             future=executor.submit(find_link_single_track, track_dict, N, conservative)
-
             if (future.result() is not None) and future.result()[0]: # if non-empty link
                 query_dict[i]={**track_dict, **{'Link': future.result()[0], 'Query': future.result()[1]}}
-
     print("\n{} links are returned in total.".format(len(query_dict)))
-
     return query_dict
 
 
 if __name__ == '__main__':
 
-    parser=argparse.ArgumentParser(description='Youtube Searcher from chart_dict.json')
+    parser=argparse.ArgumentParser(description='Youtube Link Searcher from Spotify Playlist.')
     parser.add_argument('-p', '--playlist', type=str, required=True, help='Path to the playlist_dict.json file.')
     parser.add_argument('-n', type=int, default=3, help='Number of top entries to search for each query.')
     parser.add_argument('--conservative', action='store_true', help='Be conservative during search.')
