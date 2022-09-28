@@ -6,6 +6,8 @@ A repository for downloading high quality electronic music from YouTube with Spo
     Update the environment file
     Path of the dummy client info        
 
+chmod u+x download_spotify_playlist.sh
+
 1) Create the Environment:
 
     conda create --name myenv --file requirements.txt
