@@ -78,7 +78,7 @@ def main(URL,output_dir,verbose=True):
 if __name__ == '__main__':
 
 	parser=argparse.ArgumentParser(description='Youtube mp3 downloader.')
-	parser.add_argument('-l', '--link', type=str, required=True, help='Youtube Playlist/Track link.')
+	parser.add_argument('-u', '--url', type=str, required=True, help='Youtube Playlist/Track URL.')
 	parser.add_argument('-o', '--output', type=str, default=OUTPUT_DIR, help='Specify an output directory name.')
 	args=parser.parse_args()
 
@@ -87,4 +87,4 @@ if __name__ == '__main__':
 	print(f"Track(s) will be downloaded to: {args.output}")
 
 	# Download
-	main(args.link, args.output)
+	main(args.url, args.output)
