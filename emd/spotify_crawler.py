@@ -57,7 +57,7 @@ if __name__ == "__main__":
     url='https://api.spotify.com/v1/playlists/{}/tracks'.format(URI)
     # Read the spotify user's information for request
     with open(CLIENT_INFO_PATH, 'r') as infile:
-        client_info_dict = json.load(infile)
+        client_info_dict=json.load(infile)
     # POST
     auth_response=requests.post(AUTH_URL, {
         'grant_type': 'client_credentials',

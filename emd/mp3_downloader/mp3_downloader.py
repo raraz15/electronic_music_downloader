@@ -8,10 +8,10 @@ import datetime as dt
 
 import youtube_dl
 
-OUTPUT_DIR = "Downloads"
+OUTPUT_DIR="Downloads"
 DATE=dt.datetime.strftime(dt.datetime.now(),'%d_%m_%y')
 SIMPLE_FORMAT=f"%(title)s.%(ext)s"
-YDL_OPTS = {
+YDL_OPTS={
 		'format': 'bestaudio/best',
 		'postprocessors': [{'key': 'FFmpegExtractAudio',
 							'preferredcodec': 'mp3',
@@ -70,10 +70,10 @@ def main(URL,output_dir):
 # TODO: faster flattening
 if __name__ == '__main__':
 
-	parser = argparse.ArgumentParser(description='Youtube mp3 downloader.')
+	parser=argparse.ArgumentParser(description='Youtube mp3 downloader.')
 	parser.add_argument('-l', '--link', type=str, required=True, help='Youtube Playlist/Track link.')
 	parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
-	args = parser.parse_args()
+	args=parser.parse_args()
 
 	# Determine and create the output directory
 	if args.output=='': # Default output Directory

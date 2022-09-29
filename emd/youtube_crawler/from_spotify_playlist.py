@@ -15,11 +15,11 @@ PLAYLISTS_DIR='Playlists'
 QUERY_DIR='Queries'
 
 def duration_str_to_int(duration_str):
-    s = duration_str[-2:]
-    m = duration_str[-5:-3]
-    duration = int(s) + 60*int(m)    
+    s=duration_str[-2:]
+    m=duration_str[-5:-3]
+    duration=int(s) + 60*int(m)    
     if len(duration_str.split(':'))>2:
-        h = int(duration_str[:duration_str.index(':')])
+        h=int(duration_str[:duration_str.index(':')])
         duration += 3600*h
     return duration
 

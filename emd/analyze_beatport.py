@@ -203,8 +203,8 @@ if __name__ == '__main__':
     print("-"*(3+3+2+3+1+max_title_len+max_artist_len))
 
     # Analysis
-    key_dict,bpm_dict,label_dict,artist_dict = defaultdict(int),defaultdict(int),defaultdict(int),defaultdict(int)
-    remix_dict = {'remix': 0, 'original': 0}
+    key_dict,bpm_dict,label_dict,artist_dict=defaultdict(int),defaultdict(int),defaultdict(int),defaultdict(int)
+    remix_dict={'remix': 0, 'original': 0}
     for track in tracks.values():
         bpm_dict[track['BPM']] += 1
         key_dict[track['Key']] += 1
@@ -215,16 +215,16 @@ if __name__ == '__main__':
             remix_dict['remix'] += 1
         else:
             remix_dict['original'] += 1
-    artist_dict = dict(sorted(artist_dict.items()))
-    key_dict = dict(sorted(key_dict.items()))               
-    bpm_dict = dict(sorted(bpm_dict.items()))
-    label_dict = dict(sorted(label_dict.items())) 
+    artist_dict=dict(sorted(artist_dict.items()))
+    key_dict=dict(sorted(key_dict.items()))               
+    bpm_dict=dict(sorted(bpm_dict.items()))
+    label_dict=dict(sorted(label_dict.items())) 
 
     # Plotting
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
-    labels = ['Remix', 'Original']
-    explode = (0, 0.05)  
-    fig0, ax = plt.subplots(figsize=(10,5))
+    labels=['Remix', 'Original']
+    explode=(0, 0.05)  
+    fig0, ax=plt.subplots(figsize=(10,5))
     ax.pie(remix_dict.values(), explode=explode, labels=labels, autopct='%1.1f%%',
             shadow=True, startangle=90, textprops={'fontsize': 15})
     ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
@@ -232,16 +232,16 @@ if __name__ == '__main__':
     if not args.save_figure:
         plt.draw()   
 
-    fig1, ax = plt.subplots(figsize=(20,8))
+    fig1, ax=plt.subplots(figsize=(20,8))
     ax.bar(artist_dict.keys(), artist_dict.values())
     ax.set_ylabel('Number of Appearances',fontsize=15)
     ax.set_xlabel('Artist',fontsize=15)
     ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Artist Distribution",fontsize=14)
-    plt.xticks(rotation = 90)
+    plt.xticks(rotation=90)
     if not args.save_figure:
         plt.draw()    
 
-    fig2, ax = plt.subplots(figsize=(20,8))
+    fig2, ax=plt.subplots(figsize=(20,8))
     ax.bar(key_dict.keys(), key_dict.values())
     ax.set_ylabel('Number of Tracks',fontsize=15)
     ax.set_xlabel('Track Key',fontsize=15)
@@ -249,7 +249,7 @@ if __name__ == '__main__':
     if not args.save_figure:
         plt.draw()  
 
-    fig3, ax = plt.subplots(figsize=(20,8))
+    fig3, ax=plt.subplots(figsize=(20,8))
     ax.bar(bpm_dict.keys(), bpm_dict.values())
     ax.set_ylabel('Number of Tracks',fontsize=15)
     ax.set_xlabel('Track BPM',fontsize=15)
@@ -257,12 +257,12 @@ if __name__ == '__main__':
     if not args.save_figure:
         plt.draw()   
 
-    fig4, ax = plt.subplots(figsize=(20,8))
+    fig4, ax=plt.subplots(figsize=(20,8))
     ax.bar(label_dict.keys(), label_dict.values())
     ax.set_ylabel('Number of Tracks',fontsize=15)
     ax.set_xlabel('Label Name',fontsize=15)
     ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Label Distribution",fontsize=14)
-    plt.xticks(rotation = 90)
+    plt.xticks(rotation=90)
     if not args.save_figure:
         plt.draw()
         plt.show()        
