@@ -1,5 +1,6 @@
 import os,sys
 import json
+import re
 import argparse
 
 from mp3_downloader import main
@@ -26,6 +27,7 @@ if __name__ == '__main__':
         output_dir=args.output
     else:
         query_name=os.path.splitext(os.path.basename(query_path))[0]
+        query_name=re.sub(r'\-[a-zA-Z]*Queries', '', query_name) # Remove XQueries
         output_dir=os.path.join(DOWNLOAD_DIR, query_name)
     os.makedirs(output_dir, exist_ok=True)
     print(f"Track(s) will be downloaded to: {output_dir}")

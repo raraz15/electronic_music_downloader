@@ -167,7 +167,7 @@ if __name__ == '__main__':
 
     # Get the Genre Name from the URL
     genre=args.url.split("/")[-3].title().replace('-','_')
-    CHART_NAME=f"Beatport-{genre}-Top100-{DATE}"
+    CHART_NAME=f"{genre}-BeatportTop100-{DATE}"
     SIMPLE_NAME=genre.replace('_',' ') # For Plotting and Printing
     print(f"{SIMPLE_NAME} - Top 100")
 
