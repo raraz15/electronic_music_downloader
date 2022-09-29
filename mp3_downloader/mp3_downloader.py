@@ -19,37 +19,21 @@ YDL_OPTS = {
 		# 'preferredquality': '320' upsamples!
 	}
 
-# TODO: raise warning if quality not 320
-# TODO: faster flattening
-if __name__ == '__main__':
+def main(URL,output_dir):
 
-	parser = argparse.ArgumentParser(description='Youtube mp3 downloader.')
-	parser.add_argument('-l', '--link', type=str, required=True, help='Youtube Playlist/Track link.')
-	parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
-	parser.add_argument('-v', '--verbose', action='store_true', help='Control printing.')
-	args = parser.parse_args()
-
-	# If user specified a directory, overwrite the default
-	if args.output!='': 
-		OUTPUT_DIR=args.output
-	else:
-		OUTPUT_DIR=f"{OUTPUT_DIR}/{DATE}"
-	YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}"
-	# Create the Output Directory
-	os.makedirs(OUTPUT_DIR, exist_ok=True)
-	if args.verbose:
-		print(f"Track(s) will be downloaded to: {OUTPUT_DIR}")
+	# Initialize the output format
+	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
 
 	# Flatten the links if its a playlist
 	links=[]
 	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl: # Get all the individual links
-		result=ydl.extract_info(args.link, download=False)
+		result=ydl.extract_info(URL, download=False)
 		if 'entries' in result: # Playlist
 			for i,item in enumerate(result['entries']):
 				links.append(result['entries'][i]['webpage_url'])
 			print("Flattened the playlist.")
 		else:
-			links=[args.link] # Single track
+			links=[URL] # Single track
 			
 	for link in links:
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
@@ -64,26 +48,40 @@ if __name__ == '__main__':
 			# Change the formatting if artist and track name is specified
 			if (artist is not None) and (track is not None):
 				form="%(artist)s - %(track)s.%(ext)s"
-				YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{form}"
+				YDL_OPTS['outtmpl']=f"{output_dir}/{form}"
 			else: # Attempt download with the current format
 				try:
 					ydl.download([link])
-				#except KeyboardInterrupt:
-				#	sys.exit(1)				
-				except Exception as ex:     
+				except Exception:
 					print(f"There was an error on: {link}")
 				print("")
 				continue
 		# Set the new format and Download
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			try:
-				ydl.download([link])
-			#except KeyboardInterrupt:
-			#	sys.exit(1)				
-			except Exception as ex:     
+				ydl.download([link])	
+			except Exception:
 				print(f"There was an error on: {link}")
-				#exception_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
-				#print(exception_str)
 		# Go back to the default format
-		YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}"
-		print("")
+		YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
+		print("")	
+
+
+# TODO: faster flattening
+if __name__ == '__main__':
+
+	parser = argparse.ArgumentParser(description='Youtube mp3 downloader.')
+	parser.add_argument('-l', '--link', type=str, required=True, help='Youtube Playlist/Track link.')
+	parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
+	args = parser.parse_args()
+
+	# Determine and create the output directory
+	if args.output=='': # Default output Directory
+		output_dir=f"{OUTPUT_DIR}/{DATE}"
+	else: # If user specified a directory, overwrite the default
+		output_dir=args.output
+	os.makedirs(output_dir, exist_ok=True)
+	print(f"Track(s) will be downloaded to: {output_dir}")
+
+	# Download
+	main(args.link, output_dir)
