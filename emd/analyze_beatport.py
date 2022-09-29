@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 OUTPUT_DIR="Charts"
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
-
+OUTPUT_DIR=os.path.join(OUTPUT_DIR,DATE)
 
 def create_tracks_garbage(url):
     html=requests.get(url).content
@@ -160,7 +160,7 @@ if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Beatport Top100 Analyzer')
     parser.add_argument('-u', '--url', type=str, required=True, help='URL of the Top100 site.')
-    parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
+    parser.add_argument('-o', '--output', type=str, default=OUTPUT_DIR, help='Specify an output directory.')
     parser.add_argument('-N', type=int, default=10, help='Number of top entries to display.')
     parser.add_argument('--save-figure', action='store_true', help='Save the figures.')
     args=parser.parse_args()
@@ -176,19 +176,14 @@ if __name__ == '__main__':
     tracks={idx: create_track_dict(track, idx)  for idx,track in enumerate(tracks_garbage)}
     print("Top Track:")
     print(json.dumps(tracks[0],indent=4))
-
-    # If user specified a directory, overwrite the default
-    if args.output!='': 
-        OUTPUT_DIR=args.output
-    else:
-        OUTPUT_DIR=os.path.join(OUTPUT_DIR,DATE)
+        
 	# Create the Output Directory
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(args.output, exist_ok=True)
     # Export to json
-    output_path=os.path.join(OUTPUT_DIR,CHART_NAME+".json")
+    output_path=os.path.join(args.output,CHART_NAME+".json")
     with open(output_path,'w', encoding='utf8') as outfile:
         json.dump(tracks, outfile, indent=4)
-    print(f"Exported to: {output_path}\n")
+    print(f"Exported the Beatport Analysis to: {output_path}\n")
 
     # Pretty Print Top N
     max_title_len=max([len(track['Title']) for i,track in enumerate(tracks.values()) if i<args.N])
@@ -269,9 +264,9 @@ if __name__ == '__main__':
 
     # If the user required further analysis
     if args.save_figure:
-        fig0.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Remix_Distribution.png"))
-        fig1.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Artist_Distribution.png"))
-        fig2.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Key_Distribution.png"))
-        fig3.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-BPM_Distribution.png"))
-        fig4.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Label_Distribution.png"))
+        fig0.savefig(os.path.join(args.output, f"{CHART_NAME}-Remix_Distribution.png"))
+        fig1.savefig(os.path.join(args.output, f"{CHART_NAME}-Artist_Distribution.png"))
+        fig2.savefig(os.path.join(args.output, f"{CHART_NAME}-Key_Distribution.png"))
+        fig3.savefig(os.path.join(args.output, f"{CHART_NAME}-BPM_Distribution.png"))
+        fig4.savefig(os.path.join(args.output, f"{CHART_NAME}-Label_Distribution.png"))
         plt.close("all")
