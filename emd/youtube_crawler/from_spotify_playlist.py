@@ -146,10 +146,10 @@ if __name__ == '__main__':
         playlist_path=os.path.join(PLAYLISTS_DIR, playlist_path)
     with open(playlist_path, 'r') as infile:
         playlist=json.load(infile)
-    print("Playlist loaded...")
+    print("Playlist loaded.")
 
     # Make a dict containing queries for each of the tracks in the playlist. 
-    print("Making queries for each of the tracks.")
+    print("Making queries for each of the tracks...")
     query_dict=get_all_links_and_queries(playlist, N=args.n, conservative=args.conservative)
 
     outfile_name=os.path.splitext(os.path.basename(playlist_path))[0]+'-SpotifyQueries.json' 
