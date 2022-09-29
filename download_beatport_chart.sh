@@ -3,7 +3,6 @@
 # ============================ USER INPUTS ===========================================
 # URL of the chart
 URL="https://www.beatport.com/genre/tech-house/11/top-100"
-NAME="Try2"
 # ====================================================================================
 
 source ~/.bash_profile
@@ -13,21 +12,24 @@ conda activate youtube
 
 # Get the track information
 echo "Getting Chart Information..."
-python emd/analyze_beatport.py -u=$URL -o="Charts/$NAME" --save-figure
+python emd/analyze_beatport.py -u=$URL --save-figure
 
-# Locate the chart analysis file and create the chart_file name
-chart_file="$(find "Charts/$NAME" -type f -name "*.json")"
-name=$(basename $chart_file .json)
+# Find the last json file created
+chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
 
 # Find the Youtube URLs
 echo
 echo "Getting Youtube links..."
-python emd/youtube_crawler/from_beatport_chart.py -p=$chart_file
+python emd/youtube_crawler/from_beatport_chart.py -p=$chart_path
+
+# Use the name of the chart to get the query path
+query_path="$(basename $chart_path .json)-Queries.json"
+#query_path="$query_path"
 
 # Download each track
 echo
 echo "Starting the download..."
-python emd/mp3_downloader/download_queries.py -p="Queries/$name-Queries.json"
+python emd/mp3_downloader/download_queries.py -p=$query_path
 
 # ====================================================================================
 echo "Done!"
