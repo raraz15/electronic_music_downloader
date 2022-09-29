@@ -155,6 +155,7 @@ def create_track_dict(track, idx):
         track_dict['Remixer(s)']=remixer_name      
     return track_dict
 
+# TODO: Fix the 99 bug
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Beatport Top100 Analyzer')
@@ -172,9 +173,9 @@ if __name__ == '__main__':
 
     # Extract the track information
     tracks_garbage=create_tracks_garbage(args.url)
-    tracks={idx: create_track_dict(track, idx)  for idx,track in enumerate(tracks_garbage)}
+    tracks={idx+1: create_track_dict(track, idx+1)  for idx,track in enumerate(tracks_garbage)} # Use 1 index
     print("Top Track:")
-    print(json.dumps(tracks[0],indent=4))
+    print(json.dumps(tracks[1],indent=4))
 
     # Determine the output directory
     if args.output=='': # If the user left it empty
@@ -187,7 +188,7 @@ if __name__ == '__main__':
     output_path=os.path.join(output_dir, CHART_NAME+".json")
     with open(output_path,'w', encoding='utf8') as outfile:
         json.dump(tracks, outfile, indent=4)
-    print(f"Exported the Beatport Analysis to: {output_path}\n")
+    print(f"Exported the information of {len(tracks)} tracks to: {output_path}\n")
 
     # Pretty Print Top N
     max_title_len=max([len(track['Title']) for i,track in enumerate(tracks.values()) if i<args.N])
@@ -195,10 +196,10 @@ if __name__ == '__main__':
     print(f"Top {args.N} Tracks:")
     print(f"| {'#':>2} | {'Title':^{max_title_len}s} | {'Artist(s)':^{max_artist_len}s} |")
     print("-"*(3+3+2+3+1+max_title_len+max_artist_len))
-    for i in range(args.N):
+    for i in range(1,args.N+1):
         title=tracks[i]['Title']
         artists=tracks[i]['Artist(s)']
-        print(f"| {i+1:>2} | {title:<{max_title_len}} | {artists:<{max_artist_len}} |")
+        print(f"| {i:>2} | {title:<{max_title_len}} | {artists:<{max_artist_len}} |")
     print("-"*(3+3+2+3+1+max_title_len+max_artist_len))
 
     # Analysis
