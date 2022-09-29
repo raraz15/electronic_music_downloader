@@ -61,9 +61,9 @@ if __name__ == "__main__":
         'client_id': client_info_dict["CLIENT_ID"],
         'client_secret': client_info_dict["CLIENT_SECRET"],
     })
-    # convert the response to JSON
+    # Convert the response to JSON
     auth_response_data=auth_response.json()
-    # save the access token
+    # Save the access token
     access_token=auth_response_data['access_token']
     headers={'Authorization': 'Bearer {token}'.format(token=access_token)} 
 
@@ -104,8 +104,8 @@ if __name__ == "__main__":
     
     # Export the track dicts in a json file
     output_name=f'{playlist_name}-{DATE}.json'.format()
-    os.makedirs(args.output, exist_ok=True)
     output_dir=os.path.join(args.output, output_name)
+    os.makedirs(args.output, exist_ok=True)
     print(f'Exporting the playlist to: {output_dir}')
     with open(output_dir, 'w') as outfile:
         json.dump(track_dicts, outfile, indent=4)
