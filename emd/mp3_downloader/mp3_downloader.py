@@ -2,7 +2,6 @@
 # coding: utf-8
 
 import os
-#import traceback
 import argparse
 import datetime as dt
 
@@ -10,16 +9,22 @@ import youtube_dl
 
 OUTPUT_DIR="Downloads"
 DATE=dt.datetime.strftime(dt.datetime.now(),'%d_%m_%y')
+OUTPUT_DIR=os.path.join(OUTPUT_DIR,DATE)
+
 SIMPLE_FORMAT=f"%(title)s.%(ext)s"
 YDL_OPTS={
 		'format': 'bestaudio/best',
 		'postprocessors': [{'key': 'FFmpegExtractAudio',
 							'preferredcodec': 'mp3',
 							}],
-		# 'preferredquality': '320' upsamples!
+		# 'preferredquality': '320' upsamples, not real 320kbps
 	}
 
+# TODO: faster flattening
 def main(URL,output_dir):
+	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
+	If its a playlist, first flattens the list.
+	"""
 
 	# Initialize the output format
 	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
@@ -66,22 +71,16 @@ def main(URL,output_dir):
 		YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
 		print("")	
 
-
-# TODO: faster flattening
 if __name__ == '__main__':
 
 	parser=argparse.ArgumentParser(description='Youtube mp3 downloader.')
 	parser.add_argument('-l', '--link', type=str, required=True, help='Youtube Playlist/Track link.')
-	parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
+	parser.add_argument('-o', '--output', type=str, default=OUTPUT_DIR, help='Specify an output directory name.')
 	args=parser.parse_args()
 
-	# Determine and create the output directory
-	if args.output=='': # Default output Directory
-		output_dir=f"{OUTPUT_DIR}/{DATE}"
-	else: # If user specified a directory, overwrite the default
-		output_dir=args.output
-	os.makedirs(output_dir, exist_ok=True)
-	print(f"Track(s) will be downloaded to: {output_dir}")
+	# Create the output directory
+	os.makedirs(args.output, exist_ok=True)
+	print(f"Track(s) will be downloaded to: {args.output}")
 
 	# Download
-	main(args.link, output_dir)
+	main(args.link, args.output)
