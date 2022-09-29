@@ -14,17 +14,17 @@ conda activate youtube
 
 # Get the track information
 echo "Getting Playlist Information..."
-python spotify_crawler/spotify_crawler.py -u=$URI -n=$NAME
+python emd/spotify_crawler.py -u=$URI -n=$NAME
 
 # Find the Youtube URLs
 echo
 echo "Getting Youtube links..."
-python youtube_crawler/from_spotify_playlist.py -p="Playlists/$NAME.json"
+python emd/youtube_crawler/from_spotify_playlist.py -p="Playlists/$NAME.json"
 
 # Download each track
 echo
 echo "Starting the download..."
-python mp3_downloader/download_queries.py -q="$NAME-SpotifyQueries.json"
+python emd/mp3_downloader/download_queries.py -q="$NAME-SpotifyQueries.json"
 
 # ====================================================================================
 
