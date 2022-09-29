@@ -229,7 +229,8 @@ if __name__ == '__main__':
             shadow=True, startangle=90, textprops={'fontsize': 15})
     ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
     ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Remix Distribution",fontsize=14)
-    plt.draw()   
+    if not args.save_figure:
+        plt.draw()   
 
     fig1, ax = plt.subplots(figsize=(20,8))
     ax.bar(artist_dict.keys(), artist_dict.values())
@@ -237,21 +238,24 @@ if __name__ == '__main__':
     ax.set_xlabel('Artist',fontsize=15)
     ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Artist Distribution",fontsize=14)
     plt.xticks(rotation = 90)
-    plt.draw()    
+    if not args.save_figure:
+        plt.draw()    
 
     fig2, ax = plt.subplots(figsize=(20,8))
     ax.bar(key_dict.keys(), key_dict.values())
     ax.set_ylabel('Number of Tracks',fontsize=15)
     ax.set_xlabel('Track Key',fontsize=15)
     ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Key Distribution",fontsize=14)
-    plt.draw()  
+    if not args.save_figure:
+        plt.draw()  
 
     fig3, ax = plt.subplots(figsize=(20,8))
     ax.bar(bpm_dict.keys(), bpm_dict.values())
     ax.set_ylabel('Number of Tracks',fontsize=15)
     ax.set_xlabel('Track BPM',fontsize=15)
     ax.set_title(f"Beatport {SIMPLE_NAME} Top100 BPM Distribution",fontsize=14)
-    plt.draw()   
+    if not args.save_figure:
+        plt.draw()   
 
     fig4, ax = plt.subplots(figsize=(20,8))
     ax.bar(label_dict.keys(), label_dict.values())
@@ -259,9 +263,9 @@ if __name__ == '__main__':
     ax.set_xlabel('Label Name',fontsize=15)
     ax.set_title(f"Beatport {SIMPLE_NAME} Top100 Label Distribution",fontsize=14)
     plt.xticks(rotation = 90)
-    plt.draw()
-
-    plt.show()        
+    if not args.save_figure:
+        plt.draw()
+        plt.show()        
 
     # If the user required further analysis
     if args.save_figure:
@@ -270,3 +274,4 @@ if __name__ == '__main__':
         fig2.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Key_Distribution.png"))
         fig3.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-BPM_Distribution.png"))
         fig4.savefig(os.path.join(OUTPUT_DIR, f"{CHART_NAME}-Label_Distribution.png"))
+        plt.close("all")
