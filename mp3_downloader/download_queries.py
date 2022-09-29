@@ -2,6 +2,8 @@ import os,sys
 import json
 import argparse
 
+from mp3_downloader import main
+
 QUERY_DIR='Queries'
 DOWNLOAD_DIR='Downloads'
 
@@ -25,17 +27,15 @@ if __name__ == '__main__':
     # If user specified a directory, overwrite the default
     if args.output!='':
         output_dir=args.output
+    os.makedirs(output_dir, exist_ok=True)
+    print(f"Track(s) will be downloaded to: {output_dir}")
 
     # Download all the tracks
     for i, query_dict in enumerate(queries_dict.values()):
         print(f"{i+1}/{len(queries_dict)}")
         try:
-            if i==0:
-                os.system(f"python mp3_downloader/mp3_downloader.py -l={query_dict['Link']} -o={output_dir} -v")
-            else:
-                os.system(f"python mp3_downloader/mp3_downloader.py -l={query_dict['Link']} -o={output_dir}")
+            main(query_dict['Link'], output_dir)
         except KeyboardInterrupt:
             sys.exit()
         except Exception as ex: 
-            continue
-            #print(f"There was an error on: {query_dict['Link']}")
+            continue # Main will print the error link
