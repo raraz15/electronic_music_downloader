@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import os,sys
+import os
 #import traceback
 import argparse
 import datetime as dt
@@ -29,7 +29,7 @@ def main(URL,output_dir):
 	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl: # Get all the individual links
 		result=ydl.extract_info(URL, download=False)
 		if 'entries' in result: # Playlist
-			for i,item in enumerate(result['entries']):
+			for i,_ in enumerate(result['entries']):
 				links.append(result['entries'][i]['webpage_url'])
 			print("Flattened the playlist.")
 		else:
