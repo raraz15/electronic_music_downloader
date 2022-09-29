@@ -68,8 +68,8 @@ if __name__ == '__main__':
 			else: # Attempt download with the current format
 				try:
 					ydl.download([link])
-				except KeyboardInterrupt:
-					sys.exit(1)				
+				#except KeyboardInterrupt:
+				#	sys.exit(1)				
 				except Exception as ex:     
 					print(f"There was an error on: {link}")
 				print("")
@@ -78,8 +78,8 @@ if __name__ == '__main__':
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			try:
 				ydl.download([link])
-			except KeyboardInterrupt:
-				sys.exit(1)				
+			#except KeyboardInterrupt:
+			#	sys.exit(1)				
 			except Exception as ex:     
 				print(f"There was an error on: {link}")
 				#exception_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
