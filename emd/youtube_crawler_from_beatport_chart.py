@@ -4,7 +4,6 @@ import argparse
 import traceback
 import re
 import json
-from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
@@ -12,8 +11,6 @@ from youtubesearchpython import VideosSearch
 
 from info import CHARTS_DIR,QUERY_DIR # Default download directories
 
-# TODO: deal with - (Official Audio), ...
-# TODO: Premiere
 def query_title(track_dict):
     
     title=track_dict['Title']
@@ -129,30 +126,18 @@ def find_link_single_track(track_dict, N, conservative=False):
     except Exception as ex:     
         print("There was an error on: {}".format(query))
         exception_str=''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
-        print(exception_str+'\n')        
-
-def get_all_links_and_queries(chart_dict, N=10, conservative=False):
-    """For all the track dicts inside the chart dict, finds the corresponding Youtube links."""
-
-    query_dict={}
-    with ThreadPoolExecutor(max_workers=16) as executor:
-        for i, track_dict in enumerate(chart_dict.values()): 
-            #if not i % 100:
-            #    print('\n{:.1f}% ({}/{})'.format(100*(i)/len(chart_dict), i, len(chart_dict)))
-            future=executor.submit(find_link_single_track, track_dict, N, conservative)
-            if (future.result() is not None) and future.result()[0]: # if non-empty link
-                query_dict[i]={**track_dict, **{'Link': future.result()[0], 'Query': future.result()[1]}}
-    print("{} links are returned.".format(len(query_dict)))
-    return query_dict
+        print(exception_str+'\n')
 
 
 # TODO: conservative returning mode (old TODO?)
 # TODO: (opt) Output directory?
+# TODO: deal with - (Official Audio), ...
+# TODO: Premiere
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Youtube Searcher from Beatport chart')
     parser.add_argument('-p', '--path', type=str, required=True, help='Path to the chart_dict.json file.')
-    parser.add_argument('-n', type=int, default=3, help='Number of top entries to search for each query.')
+    parser.add_argument('-N', type=int, default=3, help='Number of top entries to search for each query.')
     parser.add_argument('--conservative', action='store_true', help='Be conservative during search.')
     args=parser.parse_args()    
 
@@ -162,9 +147,17 @@ if __name__ == '__main__':
         chart_path=os.path.join(CHARTS_DIR, chart_path)
     with open(chart_path, 'r') as infile:
         chart=json.load(infile)
+    print("Chart loaded.")
 
-    query_dict=get_all_links_and_queries(chart, N=args.n, conservative=args.conservative)
+    # Create a dict containing queries for each of the tracks in the chart. 
+    print("Making queries for each of the tracks...")        
+    query_dict={}
+    for i, track_dict in enumerate(chart.values()):
+        link, query=find_link_single_track(track_dict, args.N, args.conservative)
+        query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
+    print("{} links are returned.".format(len(query_dict)))
 
+    # Export the query dict
     chart_name=os.path.splitext(os.path.basename(chart_path))[0]
     outfile_name=f"{chart_name}-Queries.json"
     outfile_path=os.path.join(QUERY_DIR, outfile_name)

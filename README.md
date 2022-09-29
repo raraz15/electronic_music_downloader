@@ -1,7 +1,6 @@
 # electronic_music_downloader
 
-A repository for downloading electronic music from YouTube with Spotify and Beatport crawling capacities. It could be used for other
-genres of music but our query algorithm is designed for electronic music traditions.
+A repository for downloading electronic music from YouTube with Spotify and Beatport crawling capacities. It could be used for other genres of music but our query algorithm is designed for electronic music traditions.
 
 ## TODO: 
 - [ ] Update the environment file

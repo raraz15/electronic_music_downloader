@@ -142,7 +142,8 @@ if __name__ == '__main__':
         query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
     print("{} links are returned in total.".format(len(query_dict)))
 
-    outfile_name=os.path.splitext(os.path.basename(playlist_path))[0]+'-SpotifyQueries.json' 
+    # Export the query dict
+    outfile_name=os.path.splitext(os.path.basename(playlist_path))[0]+'-Queries.json' 
     outfile_path=os.path.join(QUERY_DIR, outfile_name)
     with open(outfile_path, 'w', encoding='utf-8') as outfile:
         json.dump(query_dict, outfile, indent=4)
