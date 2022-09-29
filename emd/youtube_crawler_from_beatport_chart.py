@@ -10,8 +10,7 @@ import numpy as np
 
 from youtubesearchpython import VideosSearch
 
-CHARTS_DIR='Charts'
-QUERY_DIR='Queries'
+from info import CHARTS_DIR,QUERY_DIR # Default download directories
 
 # TODO: deal with - (Official Audio), ...
 # TODO: Premiere

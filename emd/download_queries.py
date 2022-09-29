@@ -4,8 +4,8 @@ import argparse
 
 from mp3_downloader import main
 
-QUERY_DIR='Queries'
-DOWNLOAD_DIR='Downloads'
+from info import DOWNLOAD_DIR, QUERY_DIR # Default directories
+
 
 if __name__ == '__main__':
 

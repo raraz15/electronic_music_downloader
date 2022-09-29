@@ -5,12 +5,11 @@ import argparse
 import datetime as dt
 import json
 
+from info import CLIENT_INFO_PATH # Path to json file containing spotify client
+from info import PLAYLIST_DIR # Default download directory
+
 AUTH_URL='https://accounts.spotify.com/api/token'
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%y")
-PLAYLIST_DIR='Playlists'
-
-# Information of the Spotify User is stored in this file
-CLIENT_INFO_PATH="/Users/recep_oguz_araz/Desktop/Projects/spotify_client_info.json"
 
 def title_formater(name, artists):
     """ Puts the Artist, Track Title, Mix Type information in a standard format"""

@@ -12,7 +12,7 @@ from collections import defaultdict
 
 import matplotlib.pyplot as plt
 
-OUTPUT_DIR="Charts"
+from info import CHARTS_DIR # Default directory
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 
 def create_tracks_garbage(url):
@@ -177,15 +177,15 @@ if __name__ == '__main__':
     print("Top Track:")
     print(json.dumps(tracks[1],indent=4))
 
-    # Determine the output directory
-    if args.output=='': # If the user left it empty
-        output_dir=os.path.join(OUTPUT_DIR, CHART_NAME)
-    else:
+    # If user specified a directory, overwrite the default
+    if args.output!='': 
         output_dir=args.output
+    else:
+        output_dir=os.path.join(CHARTS_DIR, CHART_NAME)
 	# Create the Output Directory
     os.makedirs(output_dir, exist_ok=True)
     # Export to json
-    output_path=os.path.join(output_dir, CHART_NAME+".json")
+    output_path=os.path.join(output_dir,CHART_NAME+".json")
     with open(output_path,'w', encoding='utf8') as outfile:
         json.dump(tracks, outfile, indent=4)
     print(f"Exported the information of {len(tracks)} tracks to: {output_path}\n")

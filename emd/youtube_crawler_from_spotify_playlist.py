@@ -11,8 +11,7 @@ import numpy as np
 from youtubesearchpython import VideosSearch
 
 # Default download directories
-PLAYLISTS_DIR='Playlists'
-QUERY_DIR='Queries'
+from info import PLAYLIST_DIR,QUERY_DIR
 
 def duration_str_to_int(duration_str):
     s=duration_str[-2:]
@@ -143,7 +142,7 @@ if __name__ == '__main__':
     # Load the playlist file
     playlist_path=args.playlist
     if not os.path.isfile(playlist_path): # if just the name of the json file is given
-        playlist_path=os.path.join(PLAYLISTS_DIR, playlist_path)
+        playlist_path=os.path.join(PLAYLIST_DIR, playlist_path)
     with open(playlist_path, 'r') as infile:
         playlist=json.load(infile)
     print("Playlist loaded.")

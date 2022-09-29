@@ -20,7 +20,7 @@ chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head 
 # Find the Youtube URLs
 echo
 echo "Getting Youtube links..."
-python emd/youtube_crawler/from_beatport_chart.py -p=$chart_path
+python emd/youtube_crawler_from_beatport_chart.py -p=$chart_path
 
 # Use the name of the chart to get the query path
 query_path="$(basename $chart_path .json)-Queries.json"
@@ -29,7 +29,7 @@ query_path="$(basename $chart_path .json)-Queries.json"
 # Download each track
 echo
 echo "Starting the download..."
-python emd/mp3_downloader/download_queries.py -p=$query_path
+python emd/download_queries.py -p=$query_path
 
 # ====================================================================================
 echo "Done!"

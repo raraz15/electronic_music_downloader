@@ -15,20 +15,20 @@ echo "Getting Playlist Information..."
 python emd/spotify_crawler.py -u=$URI
 
 # Find the last json file created
-NAME=$(find "Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
+playlist_path=$(find "Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
 
 # Find the Youtube URLs
 echo
 echo "Getting Youtube links..."
-python emd/youtube_crawler/from_spotify_playlist.py -p=$NAME
+python emd/youtube_crawler_from_spotify_playlist.py -p=$playlist_path
 
 # Find the last json file created
-NAME=$(find "Queries" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
+query_path=$(find "Queries" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
 
 # Download each track
 echo
 echo "Starting the download..."
-python emd/mp3_downloader/download_queries.py -p=$NAME
+python emd/download_queries.py -p=$query_path
 
 # ====================================================================================
 
