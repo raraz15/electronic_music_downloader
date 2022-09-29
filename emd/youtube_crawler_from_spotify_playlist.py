@@ -30,11 +30,10 @@ def get_best_link_for_track(customSearch, query, artists_list, audio_duration, c
     if customSearch.result()['result']:   
         N=len(customSearch.result()['result']) # number of results
         links=[customSearch.result()['result'][i]['link'] for i in range(N)] # Get the relevant links
-            
+
         # for each result, look for quality by confidence measure
         confidence_list, duration_differences =[], []
         for i in range(N): 
-
             # 1) Check if "'provided to youTube " exists in description
             flag=True            
             if customSearch.result()['result'][i]['descriptionSnippet']:
@@ -69,31 +68,31 @@ def get_best_link_for_track(customSearch, query, artists_list, audio_duration, c
         # score the confidence tupples
         scores=np.array([2*c[0]+c[1] for c in confidence_list])
         if not np.any(scores): # if all have zero confidence, do not download!
-            print("Found links failed all download criteria for query: {}\n".format(query))
+            print(f"\nReturned links failed all download criteria for: {query}")
             best_link=""
         else:
             best_link_idx=np.argmax(scores)
             if duration_differences[best_link_idx] > 240:
-                print("Links has terrible length for query: {} with length diff: {}".format(query,
+                print("\nLinks has terrible length for query: {} with length diff: {}".format(query,
                     duration_differences[best_link_idx]))
-                print('Corresponding Link: {}\n'.format(links[best_link_idx]))
+                print(f'Corresponding Link: {links[best_link_idx]}')
                 best_link=""
             elif duration_differences[best_link_idx] <= 240 and duration_differences[best_link_idx] > 5:
-                print('Found a mix from the artist or the label with wrong duration.')
+                print('\nFound a mix from the artist or the label but with wrong duration.')
                 if not conservative:
                     best_link=links[best_link_idx]
                     query=customSearch.result()['result'][i]['title'] # make the query video title
-                    print('Downloading: {}\n'.format(best_link))
+                    print(f'Non-conservative mode. Downloading: {best_link}')
                 else:
                     best_link=""
-                    print('Skipping. Conservative Mode.\n')
+                    print(f'Conservative Mode. Skipping: {best_link}')
             else:
                 best_link=links[best_link_idx] # select the link with best score
-                print('Success for: {}\n'.format(best_link))
+                print('\nSuccess for: {}'.format(best_link))
     else: # No match for the query    
         best_link=""
-        print("Search Failed for query: {}\n".format(query))
-    
+        print("\nSearch Failed for query: {}".format(query))    
+
     return best_link, query
 
 def find_link_single_track(track_dict, N, conservative=False):
@@ -117,7 +116,6 @@ def find_link_single_track(track_dict, N, conservative=False):
         exception_str=''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
         print(exception_str+'\n')        
 
-# TODO: outfile_name SpotifyQueries
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Youtube Link Searcher from Spotify Playlist.')
@@ -140,7 +138,7 @@ if __name__ == '__main__':
     for i, track_dict in enumerate(playlist.values()):
         link, query=find_link_single_track(track_dict, args.N, args.conservative)
         query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
-    print("{} links are returned in total.".format(len(query_dict)))
+    print("\n{} links are returned in total.".format(len(query_dict)))
 
     # Export the query dict
     outfile_name=os.path.splitext(os.path.basename(playlist_path))[0]+'-Queries.json' 
