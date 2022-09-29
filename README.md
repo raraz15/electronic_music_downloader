@@ -4,7 +4,8 @@ A repository for downloading high quality electronic music from YouTube with Spo
 
 ### TODO: 
     Update the environment file
-    Path of the dummy client info        
+    Path of the dummy client info      
+    Fix the search algorithm prints  
 
 chmod u+x download_spotify_playlist.sh
 
