@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import os,sys
-import traceback
+#import traceback
 import argparse
 import datetime as dt
 
@@ -72,8 +72,6 @@ if __name__ == '__main__':
 					sys.exit(1)				
 				except Exception as ex:     
 					print(f"There was an error on: {link}")
-					exception_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
-					print(exception_str)
 				print("")
 				continue
 		# Set the new format and Download
@@ -84,8 +82,8 @@ if __name__ == '__main__':
 				sys.exit(1)				
 			except Exception as ex:     
 				print(f"There was an error on: {link}")
-				exception_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
-				print(exception_str)
+				#exception_str = ''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
+				#print(exception_str)
 		# Go back to the default format
 		YDL_OPTS['outtmpl']=f"{OUTPUT_DIR}/{SIMPLE_FORMAT}"
 		print("")
