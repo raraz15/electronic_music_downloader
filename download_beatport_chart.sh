@@ -2,8 +2,8 @@
 
 # ============================ USER INPUTS ===========================================
 # URL of the chart
-URL="https://www.beatport.com/genre/tech-house/11/top-100"
-NAME="Try"
+URL="https://www.beatport.com/genre/techno-peak-time-driving/6/top-100"
+NAME="Try2"
 # ====================================================================================
 
 source ~/.bash_profile
@@ -18,7 +18,6 @@ python beatport_crawler/analyze_beatport.py -u=$URL -o="Charts/$NAME" --save-fig
 # Locate the chart analysis file and create the chart_file name
 chart_file="$(find "Charts/$NAME" -type f -name "*.json")"
 name=$(basename $chart_file .json)
-echo $name
 
 # Find the Youtube URLs
 echo

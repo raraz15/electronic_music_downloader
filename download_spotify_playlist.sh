@@ -1,9 +1,11 @@
 #!/bin/bash
 
+# ============================ USER INPUTS ===========================================
 # Type here the playlist URI
 URI="spotify:playlist:1cSukodzZOmPh6LtRGFmn9"
 # TODO: get playlist name from the API
 NAME="Yo!"
+# ====================================================================================
 
 source ~/.bash_profile
 
@@ -23,5 +25,7 @@ python youtube_crawler/from_spotify_playlist.py -p="Playlists/$NAME.json"
 echo
 echo "Starting the download..."
 python mp3_downloader/download_queries.py -q="$NAME-SpotifyQueries.json"
+
+# ====================================================================================
 
 echo "Done!"
