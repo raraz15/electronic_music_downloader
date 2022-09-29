@@ -10,12 +10,12 @@ DOWNLOAD_DIR='Downloads'
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Youtube mp3 downloader from queries.json.')
-    parser.add_argument('-q', '--queries', type=str, required=True, help='Path to the queries.json file.')
+    parser.add_argument('-p', '--path', type=str, required=True, help='Path to the queries.json file.')
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
     args=parser.parse_args()
 
     # Load the Query Dict
-    query_path=args.queries
+    query_path=args.path
     if not os.path.isfile(query_path): # Search in the default query dir
         query_path=os.path.join(QUERY_DIR, query_path)
     with open(query_path, 'r') as infile:

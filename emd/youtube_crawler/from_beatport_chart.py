@@ -147,17 +147,18 @@ def get_all_links_and_queries(chart_dict, N=10, conservative=False):
     return query_dict
 
 
-# TODO: conservative returning mode
+# TODO: conservative returning mode (old TODO?)
+# TODO: (opt) Output directory?
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Youtube Searcher from Beatport chart')
-    parser.add_argument('-c', '--chart', type=str, required=True, help='Path to the chart_dict.json file.')
+    parser.add_argument('-p', '--path', type=str, required=True, help='Path to the chart_dict.json file.')
     parser.add_argument('-n', type=int, default=3, help='Number of top entries to search for each query.')
     parser.add_argument('--conservative', action='store_true', help='Be conservative during search.')
     args=parser.parse_args()    
 
     # Load the chart file
-    chart_path=args.chart
+    chart_path=args.path
     if not os.path.isfile(chart_path): # if just the name of the json file is given
         chart_path=os.path.join(CHARTS_DIR, chart_path)
     with open(chart_path, 'r') as infile:
@@ -165,7 +166,8 @@ if __name__ == '__main__':
 
     query_dict=get_all_links_and_queries(chart, N=args.n, conservative=args.conservative)
 
-    outfile_name=os.path.splitext(os.path.basename(chart_path))[0]+'-Queries.json' 
+    chart_name=os.path.splitext(os.path.basename(chart_path))[0]
+    outfile_name=f"{chart_name}-Queries.json"
     outfile_path=os.path.join(QUERY_DIR, outfile_name)
     with open(outfile_path, 'w', encoding='utf-8') as outfile:
         json.dump(query_dict, outfile, indent=4)

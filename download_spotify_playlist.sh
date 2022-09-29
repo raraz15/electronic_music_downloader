@@ -28,7 +28,7 @@ NAME=$(find "Queries" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
 # Download each track
 echo
 echo "Starting the download..."
-python emd/mp3_downloader/download_queries.py -q=$NAME
+python emd/mp3_downloader/download_queries.py -p=$NAME
 
 # ====================================================================================
 

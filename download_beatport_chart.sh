@@ -2,7 +2,7 @@
 
 # ============================ USER INPUTS ===========================================
 # URL of the chart
-URL="https://www.beatport.com/genre/techno-peak-time-driving/6/top-100"
+URL="https://www.beatport.com/genre/tech-house/11/top-100"
 NAME="Try2"
 # ====================================================================================
 
@@ -22,12 +22,12 @@ name=$(basename $chart_file .json)
 # Find the Youtube URLs
 echo
 echo "Getting Youtube links..."
-python emd/youtube_crawler/from_beatport_chart.py -c=$chart_file
+python emd/youtube_crawler/from_beatport_chart.py -p=$chart_file
 
 # Download each track
 echo
 echo "Starting the download..."
-python emd/mp3_downloader/download_queries.py -q="Queries/$name-Queries.json"
+python emd/mp3_downloader/download_queries.py -p="Queries/$name-Queries.json"
 
 # ====================================================================================
 echo "Done!"
