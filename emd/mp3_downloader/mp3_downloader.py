@@ -21,7 +21,7 @@ YDL_OPTS={
 	}
 
 # TODO: faster flattening
-def main(URL,output_dir):
+def main(URL,output_dir,verbose=True):
 	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
 	If its a playlist, first flattens the list.
 	"""
@@ -39,8 +39,12 @@ def main(URL,output_dir):
 			print("Flattened the playlist.")
 		else:
 			links=[URL] # Single track
+	if verbose:
+		print("Starting to download...\n")
 			
-	for link in links:
+	for i,link in enumerate(links):
+		if verbose:
+			print(f"{i+1}/{len(links)}")
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			# Get information to determine name formatting
 			info_dict=ydl.extract_info(link, download=False)
