@@ -9,19 +9,11 @@ from youtubesearchpython import VideosSearch
 
 from info import CHARTS_DIR,QUERY_DIR # Default download directories
 
-# TODO: start with no Mix information!
 def form_query(track_dict):
     title=track_dict['Title']
     artist=track_dict['Artist(s)']
-    mix=track_dict['Mix']
-    if mix in title or 'mix' in title or 'Mix' in title:
-        query="{} - {}".format(artist, title)   
-    else:
-        if not ('mix' in mix or 'Mix' in mix): # sometimes the "Mix" is not included
-            mix += ' Mix' 
-        query="{} - {} ({})".format(artist, title, mix)
-    # Remove unwanted parts
-    query='-'.join([part for part in query.split('-') if 'Official' not in part])       
+    label=track_dict['Label']
+    query=f"{title} - {artist} - {label}"
     return query
 
 def duration_str_to_int(duration_str):
@@ -33,6 +25,7 @@ def duration_str_to_int(duration_str):
         duration += 3600*h
     return duration
 
+# TODO: split the artists list and search for the first one
 def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
     artist,label=artist.lower(),label.lower()
     results=customSearch.result()['result']
@@ -49,7 +42,7 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
             flag=True
             if description:
                 for text in description:
-                    if re.search(r"provided to youtube", text['text'].lower()):
+                    if re.search("provided to youtube", text['text'].lower()):
                         c+=(True,)
                         flag=False
                         break
@@ -58,7 +51,7 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
             else: # No description
                 c+=(False,)
             # 2) Check if artist or label uploaded the video
-            if re.search(r'{}'.format(artist), channel_name) or re.search(r'{}'.format(label), channel_name):
+            if re.search(artist, channel_name) or re.search(label, channel_name):
                 c+=(True,)
             else:
                 c+=(False,)
@@ -73,7 +66,7 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
             if c[1] or (c[0] and (not c[1])): # A good match is found
                 if c[2]: # The match has good duration
                     best_link=link
-                    print('Success for: {}\n{}'.format(query, best_link))
+                    print(f"Success for: {query}\n{best_link}")
                     break
                 else: # A different mix type
                     best_link=link
@@ -89,8 +82,7 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
             print(query)            
     else: # No match for the query    
         best_link=""
-        print(f"Search Failed for: {query}")
-        
+        print(f"Search Failed for: {query}")   
     return best_link, query
 
 def find_link_single_track(track_dict, N, idx=None):
@@ -108,16 +100,12 @@ def find_link_single_track(track_dict, N, idx=None):
         return link, query
     except KeyboardInterrupt:
         sys.exit()
-    #except SystemExit:
-    #    print('Sys exit took me here.')
     except Exception as ex:     
         print("There was an error on: {}".format(query))
         exception_str=''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
         print(exception_str+'\n')
 
 # TODO: UTF before making a query! or enforce it in beatport_analyzer!!
-# TODO: (opt) Output directory?
-# TODO: deal with - (Official Audio), Premiere ...
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Youtube Searcher from Beatport chart')
