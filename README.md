@@ -8,6 +8,7 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 - [ ] Fix the search algorithm prints
 - [ ] Spotify Client Information doc 
 - [ ] spotify playlist URI
+- [ ] Remove (Visualizer)
 
 ## Installation
 
