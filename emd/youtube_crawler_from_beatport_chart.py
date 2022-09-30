@@ -25,7 +25,6 @@ def duration_str_to_int(duration_str):
         duration += 3600*h
     return duration
 
-# TODO: split the artists list and search for the first one
 def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
     artist,label=artist.lower(),label.lower()
     results=customSearch.result()['result']
@@ -51,7 +50,10 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
             else: # No description
                 c+=(False,)
             # 2) Check if artist or label uploaded the video
-            if re.search(artist, channel_name) or re.search(label, channel_name):
+            flag=False
+            for a in artist.split(', '):
+                flag+=bool(re.search(a, channel_name))
+            if flag or re.search(label, channel_name):
                 c+=(True,)
             else:
                 c+=(False,)
@@ -70,7 +72,6 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
                     break
                 else: # A different mix type
                     best_link=link
-                    # TODO:  change the query ? 
                     print('Found a mix from the artist or the label but with wrong duration.')
                     print(f"{query}\n{best_link}")
                     print(f"Video duration: {video_duration} - Track duration: {audio_duration}")
