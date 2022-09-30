@@ -54,36 +54,36 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration, 
         # For each result, look for quality by confidence measure
         confidence_list, duration_differences =[], []
         for i in range(N): 
-            
+            link_confidence=()
             # 1) Check if "'provided to youtube " exists in description
             flag=True
             description=customSearch.result()['result'][i]['descriptionSnippet']
             if description:
                 for text in description:
                     if re.search(r"provided to youtube", text['text'].lower()):
-                        confidence_list.append((1,))
+                        link_confidence+=(1,)
                         flag=False
                         break
                 if flag:
-                    confidence_list.append((0,))
+                    link_confidence+=(0,)
             else: # No description
-                confidence_list.append((0,))
-            
+                link_confidence+=(0,)
             # 2) Check if artist or label uploaded the video
             channel_name=customSearch.result()['result'][i]['channel']['name'].lower()       
             if re.search(r'{}'.format(artist), channel_name) or re.search(r'{}'.format(label), channel_name):
-                confidence_list[i] += (1,)
+                link_confidence+=(1,)
             else:
-                confidence_list[i] += (0,)
-            
+                link_confidence+=(0,)
+            confidence_list.append(link_confidence)
             # 3) Compare the video and track lengths
-            print(customSearch.result()['result'][i]['duration'] + f" {links[i]}" +f" {confidence_list[i]}")
+            print(customSearch.result()['result'][i]['duration'] + f" {links[i]}" +f" {link_confidence}")
             video_duration=duration_str_to_int(customSearch.result()['result'][i]['duration'])
-            duration_differences.append(abs(video_duration-audio_duration))    
+            duration_differences.append(abs(video_duration-audio_duration))
+            
+        print(confidence_list)
 
         # Score the confidence tupples
         scores=np.array([2*c[0]+c[1] for c in confidence_list])
-        print(scores)
         if not np.any(scores): # if all have zero confidence, do not download!
             best_link=""
             print(f"Returned links failed all download criteria for: {query}")
@@ -106,10 +106,10 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration, 
                     print(f'Conservative Mode. Skipping: {best_link}')
             else:
                 best_link=links[best_link_idx] # select the link with best score
-                print('Success for: {}'.format(best_link))
+                print(f"Success: {query} - {best_link}")
     else: # No match for the query    
         best_link=""
-        print("Search Failed for query: {}".format(query))
+        print(f"Search Failed for query: {query}")
         
     return best_link, query
 
@@ -162,8 +162,8 @@ if __name__ == '__main__':
     print("="*50)        
     query_dict={}
     for i, track_dict in enumerate(chart.values()):
-        #if i > 10:
-        #    break
+        if i > 15:
+            break
         link, query=find_link_single_track(track_dict, args.N, args.conservative, i)
 
         if link:
