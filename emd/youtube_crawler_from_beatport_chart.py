@@ -79,9 +79,9 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
                     best_link=link
                     # TODO:  change the query ? 
                     print('Found a mix from the artist or the label but with wrong duration.')
-                    print(f"{query} - {best_link}")
+                    print(f"{query}\n{best_link}")
                     print(f"Video duration: {video_duration} - Track duration: {audio_duration}")
-                    break 
+                    break
             else:
                 best_link=""
         if best_link=="":
@@ -117,13 +117,13 @@ def find_link_single_track(track_dict, N, idx=None):
 
 # TODO: UTF before making a query! or enforce it in beatport_analyzer!!
 # TODO: (opt) Output directory?
-# TODO: deal with - (Official Audio), ...
-# TODO: Premiere
+# TODO: deal with - (Official Audio), Premiere ...
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Youtube Searcher from Beatport chart')
     parser.add_argument('-p', '--path', type=str, required=True, help='Path to the chart_dict.json file.')
-    parser.add_argument('-N', type=int, default=3, help='Number of top entries to search for each query.')
+    parser.add_argument('-N', type=int, default=5, help='Number of top entries to search for each query.')
+    parser.add_argument('-o', '--output', type=str, default=QUERY_DIR, help='Specify an output directory.')
     args=parser.parse_args()    
 
     # Load the chart file
@@ -136,18 +136,20 @@ if __name__ == '__main__':
 
     # Create a dict containing queries for each of the tracks in the chart. 
     print("Making queries for each of the tracks...")
-    print("="*50)        
+    print("="*60)        
     query_dict={}
     for i, track_dict in enumerate(chart.values()):
         link, query=find_link_single_track(track_dict, args.N, i)
         if link:
             query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
-    print("="*50)        
+    print("="*60)        
     print("\n{} links are returned.".format(len(query_dict)))
 
     # Export the query dict
     chart_name=os.path.splitext(os.path.basename(chart_path))[0]
     outfile_name=f"{chart_name}-Queries.json"
-    outfile_path=os.path.join(QUERY_DIR, outfile_name)
+    os.makedirs(args.output, exist_ok=True)
+    outfile_path=os.path.join(args.output, outfile_name)
+    print(f"Exporting to: {outfile_path}")
     with open(outfile_path, 'w', encoding='utf-8') as outfile:
         json.dump(query_dict, outfile, indent=4)
