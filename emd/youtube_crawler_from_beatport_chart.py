@@ -54,8 +54,8 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration, 
         # For each result, look for quality by confidence measure
         confidence_list, duration_differences =[], []
         for i in range(N): 
-
-            # 1) Check if "'provided to youTube " exists in description
+            
+            # 1) Check if "'provided to youtube " exists in description
             flag=True
             description=customSearch.result()['result'][i]['descriptionSnippet']
             if description:
@@ -63,23 +63,21 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration, 
                     if re.search(r"provided to youtube", text['text'].lower()):
                         confidence_list.append((1,))
                         flag=False
-                        continue
+                        break
                 if flag:
                     confidence_list.append((0,))
             else: # No description
                 confidence_list.append((0,))
             
             # 2) Check if artist or label uploaded the video
-            flag=True
             channel_name=customSearch.result()['result'][i]['channel']['name'].lower()       
             if re.search(r'{}'.format(artist), channel_name) or re.search(r'{}'.format(label), channel_name):
                 confidence_list[i] += (1,)
-                flag=False
-            if flag:
+            else:
                 confidence_list[i] += (0,)
             
             # 3) Compare the video and track lengths
-            print(customSearch.result()['result'][i]['duration'] + f" {links[i]}" +f" {confidence_list}")
+            print(customSearch.result()['result'][i]['duration'] + f" {links[i]}" +f" {confidence_list[i]}")
             video_duration=duration_str_to_int(customSearch.result()['result'][i]['duration'])
             duration_differences.append(abs(video_duration-audio_duration))    
 
@@ -164,7 +162,10 @@ if __name__ == '__main__':
     print("="*50)        
     query_dict={}
     for i, track_dict in enumerate(chart.values()):
+        #if i > 10:
+        #    break
         link, query=find_link_single_track(track_dict, args.N, args.conservative, i)
+
         if link:
             query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
     print("="*50)        
