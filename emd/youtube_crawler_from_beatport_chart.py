@@ -38,31 +38,36 @@ def duration_str_to_int(duration_str):
         duration += 3600*h
     return duration
 
-def get_best_link_for_track(customSearch, query, artist, label, audio_duration, conservative=False):
+def get_best_link_for_track(customSearch, query, artist, label, audio_duration, conservative=False, idx=None):
 
     artist=artist.lower()
     label=label.lower()
+
+    if idx is not None:
+        print("-"*24+f"{idx+1}"+"-"*23)
         
-    # if there is a match, search for links
+    # If there is a match, search for links
     if customSearch.result()['result']:   
         N=len(customSearch.result()['result']) # number of results
         links=[customSearch.result()['result'][i]['link'] for i in range(N)] # Get the relevant links 
         
-        # for each result, look for quality by confidence measure
+        # For each result, look for quality by confidence measure
         confidence_list, duration_differences =[], []
         for i in range(N): 
+
             # 1) Check if "'provided to youTube " exists in description
-            flag=True            
-            if customSearch.result()['result'][i]['descriptionSnippet']:
-                for text in customSearch.result()['result'][i]['descriptionSnippet']:
-                    if  re.search(r"provided to youtube", text['text'].lower()):
+            flag=True
+            description=customSearch.result()['result'][i]['descriptionSnippet']
+            if description:
+                for text in description:
+                    if re.search(r"provided to youtube", text['text'].lower()):
                         confidence_list.append((1,))
                         flag=False
                         continue
                 if flag:
-                    confidence_list.append((0,))                    
-            else:
-                confidence_list.append((0,)) # No description is sketchy    
+                    confidence_list.append((0,))
+            else: # No description
+                confidence_list.append((0,))
             
             # 2) Check if artist or label uploaded the video
             flag=True
@@ -71,26 +76,29 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration, 
                 confidence_list[i] += (1,)
                 flag=False
             if flag:
-                confidence_list[i] += (0,)    
+                confidence_list[i] += (0,)
             
-            # 3) Check if video length is correct
-            video_duration=customSearch.result()['result'][i]['duration']
-            duration_differences.append(abs(duration_str_to_int(video_duration)-audio_duration))    
+            # 3) Compare the video and track lengths
+            print(customSearch.result()['result'][i]['duration'] + f" {links[i]}" +f" {confidence_list}")
+            video_duration=duration_str_to_int(customSearch.result()['result'][i]['duration'])
+            duration_differences.append(abs(video_duration-audio_duration))    
 
-        # score the confidence tupples
+        # Score the confidence tupples
         scores=np.array([2*c[0]+c[1] for c in confidence_list])
+        print(scores)
         if not np.any(scores): # if all have zero confidence, do not download!
-            print(f"\nReturned links failed all download criteria for: {query}")
             best_link=""
+            print(f"Returned links failed all download criteria for: {query}")
         else:
             best_link_idx=np.argmax(scores)
             if duration_differences[best_link_idx] > 180:
-                print("\nLinks has terrible length for query: {} with length diff: {}".format(query,
-                    duration_differences[best_link_idx]))
+                print(f"Links has terrible duration for: {query}")
+                print(f"Video duration: {video_duration}s Track duration: {audio_duration}s")
                 print(f'Corresponding Link: {links[best_link_idx]}')
                 best_link=""
             elif duration_differences[best_link_idx] <= 180 and duration_differences[best_link_idx] > 5:
-                print('\nFound a mix from the artist or the label but with wrong duration.')
+                print('Found a mix from the artist or the label but with wrong duration.')
+                print(f"{query} video duration: {video_duration}s track duration: {audio_duration}s")
                 if not conservative:
                     best_link=links[best_link_idx]
                     query=customSearch.result()['result'][i]['title'] # make the query video title
@@ -100,14 +108,14 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration, 
                     print(f'Conservative Mode. Skipping: {best_link}')
             else:
                 best_link=links[best_link_idx] # select the link with best score
-                print('\nSuccess for: {}'.format(best_link))
+                print('Success for: {}'.format(best_link))
     else: # No match for the query    
         best_link=""
-        print("\nSearch Failed for query: {}".format(query))
+        print("Search Failed for query: {}".format(query))
         
     return best_link, query
 
-def find_link_single_track(track_dict, N, conservative=False):
+def find_link_single_track(track_dict, N, conservative=False, idx=None):
     """Takes a single track dict, and makes a query to Youtube."""
 
     query=query_title(track_dict) 
@@ -118,7 +126,8 @@ def find_link_single_track(track_dict, N, conservative=False):
                                             track_dict['Artist(s)'],
                                             track_dict['Label'],
                                             duration_str_to_int(track_dict['Duration']),
-                                            conservative)
+                                            conservative,
+                                            idx)
         return link, query
     except KeyboardInterrupt:
         sys.exit()
@@ -151,11 +160,14 @@ if __name__ == '__main__':
     print("Chart loaded.")
 
     # Create a dict containing queries for each of the tracks in the chart. 
-    print("Making queries for each of the tracks...")        
+    print("Making queries for each of the tracks...")
+    print("="*50)        
     query_dict={}
     for i, track_dict in enumerate(chart.values()):
-        link, query=find_link_single_track(track_dict, args.N, args.conservative)
-        query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
+        link, query=find_link_single_track(track_dict, args.N, args.conservative, i)
+        if link:
+            query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
+    print("="*50)        
     print("\n{} links are returned.".format(len(query_dict)))
 
     # Export the query dict
