@@ -43,12 +43,18 @@ def analyze_and_plot(tracks,save_figure,output_dir,chart_name):
     if not save_figure:
         plt.draw()   
 
+    
+    artist_counts=list(artist_dict.values())
+    artist_names=list(artist_dict.keys())
+    good_artist_indices=[i for i,val in enumerate(artist_counts) if val>1]
+    artist_counts=[count for i,count in enumerate(artist_counts) if i in good_artist_indices]
+    artist_names=[name for i,name in enumerate(artist_names) if i in good_artist_indices]
     fig1, ax=plt.subplots(figsize=(20,8))
-    ax.bar(artist_dict.keys(), artist_dict.values())
+    ax.bar(artist_names,artist_counts)
     ax.set_ylabel('Number of Appearances',fontsize=15)
     ax.set_xlabel('Artist',fontsize=15)
     ax.set_title(f"Beatport {genre} Top100 Artist Distribution",fontsize=14)
-    plt.xticks(rotation=90)
+    plt.xticks(rotation=30)
     if not save_figure:
         plt.draw()    
 
