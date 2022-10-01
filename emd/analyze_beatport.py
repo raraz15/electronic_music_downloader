@@ -2,9 +2,10 @@
 # coding: utf-8
 
 import os
+import re
 import json
 import datetime as dt
-import re
+import unicodedata
 import requests
 import argparse
 from bs4 import BeautifulSoup
@@ -14,7 +15,6 @@ import matplotlib.pyplot as plt
 
 from info import CHARTS_DIR # Default directory
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
-
 
 def key_formatter(key):
     key=re.sub(r'\u266f', "b", key)
@@ -40,6 +40,12 @@ def sharpen_flats(root):
         root="{}#".format(sharpened_root)      
     return root
 
+def make_name(name_dict_list):
+    name=", ".join([artist["name"] for artist in name_dict_list])
+    name=unicodedata.normalize('NFKD', name).encode('ascii', 'ignore') # Replace é with e
+    name=name.decode("utf-8") # For json dump
+    return name
+
 def split_to_tracks(my_string):
     """Splits the soup string into track_dicts."""
     split='{"active":'
@@ -54,12 +60,12 @@ def split_to_tracks(my_string):
             track_str=track_str[:loc] # Remove garbage
         track_str=split+track_str   # Add the removed part from the split
         track_str=track_str[:-2] # Remove the space at the end
-        track=json.loads(track_str)
+        track=json.loads(track_str) # Convert the track soup to dict
         track_dicts[i]={'Title': track["release"]["name"],
                       'Mix': track["mix"],
+                      'Artist(s)': make_name(track["artists"]),
+                      'Remixers': make_name(track["remixers"]),
                       'Duration': track["duration"]["minutes"],
-                      'Artist(s)': ", ".join([artist["name"] for artist in track["artists"]]),
-                      'Remixers': ", ".join([artist["name"] for artist in track["remixers"]]),
                       'BPM': track["bpm"],
                       'Key': key_formatter(track["key"]),
                       'Label': track["label"]["name"],
@@ -69,7 +75,6 @@ def split_to_tracks(my_string):
                     }
     return track_dicts
 
-# TODO: Replace latin characters of artist names
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Beatport Top100 Analyzer')
