@@ -19,7 +19,7 @@ def form_query(track_dict):
 def duration_str_to_int(duration_str):
     s=duration_str[-2:]
     m=duration_str[-5:-3]
-    duration=int(s) + 60*int(m)    
+    duration=int(s) + 60*int(m)
     if len(duration_str.split(':'))>2:
         h=int(duration_str[:duration_str.index(':')])
         duration += 3600*h
@@ -80,20 +80,20 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
                 best_link=""
         if best_link=="":
             print("No link from the artist or one provided to youtube was found.")
-            print(query)            
-    else: # No match for the query    
+            print(query)
+    else: # No match for the query
         best_link=""
-        print(f"Search Failed for: {query}")   
+        print(f"Search Failed for: {query}")
     return best_link, query
 
 def find_link_single_track(track_dict, N, idx=None):
     """Takes a single track dict, and makes a query to Youtube."""
-    if idx is not None: 
+    if idx is not None:
         print("-"*35+f"{idx+1}"+"-"*35)
     query=form_query(track_dict) 
     try:
         customSearch=VideosSearch(query, limit=N)
-        link, query=get_best_link_for_track(customSearch, 
+        link, query=get_best_link_for_track(customSearch,
                                             query,
                                             track_dict['Artist(s)'],
                                             track_dict['Label'],
@@ -101,7 +101,7 @@ def find_link_single_track(track_dict, N, idx=None):
         return link, query
     except KeyboardInterrupt:
         sys.exit()
-    except Exception as ex:     
+    except Exception as ex:
         print("There was an error on: {}".format(query))
         exception_str=''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
         print(exception_str+'\n')
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--path', type=str, required=True, help='Path to the chart_dict.json file.')
     parser.add_argument('-N', type=int, default=5, help='Number of top entries to search for each query.')
     parser.add_argument('-o', '--output', type=str, default=QUERY_DIR, help='Specify an output directory.')
-    args=parser.parse_args()    
+    args=parser.parse_args()
 
     # Load the chart file
     chart_path=args.path
@@ -124,13 +124,13 @@ if __name__ == '__main__':
 
     # Create a dict containing queries for each of the tracks in the chart. 
     print("Making queries for each of the tracks...")
-    print("="*70)        
+    print("="*70)
     query_dict={}
     for i, track_dict in enumerate(chart.values()):
         link, query=find_link_single_track(track_dict, args.N, i)
         if link:
             query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
-    print("="*70)        
+    print("="*70)
     print("\n{} links are returned.".format(len(query_dict)))
 
     # Export the query dict
