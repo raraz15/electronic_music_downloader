@@ -7,13 +7,16 @@ import json
 
 from youtubesearchpython import VideosSearch
 
-from info import CHARTS_DIR,QUERY_DIR # Default download directories
+from info import QUERY_DIR # Default download directories
 
 def form_query(track_dict):
     title=track_dict['Title']
     artist=track_dict['Artist(s)']
-    label=track_dict['Label']
-    query=f"{title} - {artist} - {label}"
+    if 'Label' in track_dict:
+        label=track_dict['Label']
+        query=f"{title} - {artist} - {label}"
+    else:
+        query=f"{title} - {artist}"
     return query
 
 def duration_str_to_int(duration_str):
@@ -25,16 +28,16 @@ def duration_str_to_int(duration_str):
         duration += 3600*h
     return duration
 
-def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
-    artist,label=artist.lower(),label.lower()
+def get_best_link_for_track(customSearch, query, artist_label, track_dur):
+    artist,label=artist_label
+    artist,label=artist.lower(),str(label).lower() # Convert to str incase if its None
     results=customSearch.result()['result']
     if results:  # If there is a match, search for good links
-        # For each result, look for quality by cidence measure
-        for result in results:
+        for result in results: # For each result, look for quality by confidence measure
             # Get the 3 key information
             description=result['descriptionSnippet']
             channel_name=result['channel']['name'].lower()
-            video_duration=duration_str_to_int(result['duration'])
+            video_dur=duration_str_to_int(result['duration'])
             link=result['link']
             c=() # Will store the confidence values of a result
             # 1) Check if "'provided to youtube " exists in description
@@ -58,7 +61,7 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
             else:
                 c+=(False,)
             # 3) Compare the video and track lengths
-            dur_diff=abs(video_duration-audio_duration)
+            dur_diff=abs(video_dur-track_dur)
             if dur_diff>10:
                 c+=(False,)
             else:
@@ -74,7 +77,7 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
                     best_link=link
                     print('Found a mix from the artist or the label but with wrong duration.')
                     print(f"{query}\n{best_link}")
-                    print(f"Video duration: {video_duration} - Track duration: {audio_duration}")
+                    print(f"Video duration: {video_dur} - Track duration: {track_dur}")
                     break
             else:
                 best_link=""
@@ -84,21 +87,27 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
     else: # No match for the query
         best_link=""
         print(f"Search Failed for: {query}")
-    return best_link, query
+    return best_link
 
 def find_link_single_track(track_dict, N, idx=None):
     """Takes a single track dict, and makes a query to Youtube."""
     if idx is not None:
         print("-"*35+f"{idx+1}"+"-"*35)
-    query=form_query(track_dict) 
+    query=form_query(track_dict)
+    # Create a tupple of artist and label name
+    artist_label=(track_dict['Artist(s)'],)
+    if 'Label' in track_dict:
+        artist_label+=(track_dict['Label'],)
+    else:
+        artist_label+=(None,) # Spotify doesn't provide
     try:
         customSearch=VideosSearch(query, limit=N)
-        link, query=get_best_link_for_track(customSearch,
-                                            query,
-                                            track_dict['Artist(s)'],
-                                            track_dict['Label'],
-                                            duration_str_to_int(track_dict['Duration']))
-        return link, query
+        link=get_best_link_for_track(customSearch,
+                                    query,
+                                    artist_label,
+                                    track_dict['Duration(sec)']
+                                    )
+        return link
     except KeyboardInterrupt:
         sys.exit()
     except Exception as ex:
@@ -108,34 +117,32 @@ def find_link_single_track(track_dict, N, idx=None):
 
 if __name__ == '__main__':
 
-    parser=argparse.ArgumentParser(description='Youtube Searcher from Beatport chart')
+    parser=argparse.ArgumentParser(description='Youtube Crawler for Electronic Music')
     parser.add_argument('-p', '--path', type=str, required=True, help='Path to the chart_dict.json file.')
     parser.add_argument('-N', type=int, default=5, help='Number of top entries to search for each query.')
     parser.add_argument('-o', '--output', type=str, default=QUERY_DIR, help='Specify an output directory.')
     args=parser.parse_args()
 
     # Load the chart file
-    chart_path=args.path
-    if not os.path.isfile(chart_path): # if just the name of the json file is given
-        chart_path=os.path.join(CHARTS_DIR, chart_path)
-    with open(chart_path, 'r') as infile:
-        chart=json.load(infile)
+    with open(args.path, 'r') as infile:
+        tracks=json.load(infile)
     print("Chart loaded.")
 
-    # Create a dict containing queries for each of the tracks in the chart. 
+    # Create a dict containing the links for each of the tracks
     print("Making queries for each of the tracks...")
     print("="*70)
     query_dict={}
-    for i, track_dict in enumerate(chart.values()):
-        link, query=find_link_single_track(track_dict, args.N, i)
+    for i, track_dict in enumerate(tracks.values()):
+        link=find_link_single_track(track_dict, args.N, i)
         if link:
-            query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
+            track_dict["Youtube_URL"]=link
+            query_dict[i]=track_dict
     print("="*70)
     print("\n{} links are returned.".format(len(query_dict)))
 
     # Export the query dict
-    chart_name=os.path.splitext(os.path.basename(chart_path))[0]
-    outfile_name=f"{chart_name}-Queries.json"
+    tracks_list_name=os.path.splitext(os.path.basename(args.path))[0]
+    outfile_name=f"{tracks_list_name}-Queries.json"
     os.makedirs(args.output, exist_ok=True)
     outfile_path=os.path.join(args.output, outfile_name)
     print(f"Exporting to: {outfile_path}")
