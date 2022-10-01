@@ -77,7 +77,7 @@ def get_best_link_for_track(customSearch, query, artist_label, track_dur):
                     best_link=link
                     print('Found a mix from the artist or the label but with wrong duration.')
                     print(f"{query}\n{best_link}")
-                    print(f"Video duration: {video_dur} - Track duration: {track_dur}")
+                    print(f"Video duration: {video_dur}(sec) - Track duration: {track_dur}(sec)")
                     break
             else:
                 best_link=""
