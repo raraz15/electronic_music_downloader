@@ -2,6 +2,8 @@
 # coding: utf-8
 
 import os
+import re
+import shutil
 import argparse
 import datetime as dt
 
@@ -21,8 +23,18 @@ YDL_OPTS={
 		# 'preferredquality': '320' upsamples, not real 320kbps
 	}
 
+# TODO: Visualizer?
+# TODO: Take the Rekord Label Name?
+def clean_file_name(title,output_dir):
+	clean_title=re.sub(r"\s*\(Official [a-zA-Z]*\)\s*", "", title)
+	clean_title=re.sub(r"\s*\[[a-zA-Z]*\ *]", "", clean_title)
+	clean_title=re.sub(r"\s*[O|o]ut [N|n]ow", "", clean_title)
+	if clean_title!=title:
+		print(f"Changing file name: {title}\n{clean_title}")
+		shutil.move(f"{output_dir}/{clean_title}.mp3",f"{output_dir}/{title}.mp3")
+
 # TODO: faster flattening
-def main(URL,output_dir,verbose=True):
+def main(URL,output_dir,verbose=True,clean=False):
 	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
 	If its a playlist, first flattens the list.
 	"""
@@ -42,7 +54,7 @@ def main(URL,output_dir,verbose=True):
 			links=[URL] # Single track
 	if verbose:
 		print("Starting to download...\n")
-			
+
 	for i,link in enumerate(links):
 		if verbose:
 			print(f"{i+1}/{len(links)}")
@@ -52,35 +64,45 @@ def main(URL,output_dir,verbose=True):
 			# Check the audio sampling rate
 			if int(info_dict.get('asr', None))<44100:
 				print("Low sampling rate! Skipping.")
-				continue			
+				continue
 			artist=info_dict.get('artist', None)
 			track=info_dict.get('track', None)
 			# Change the formatting if artist and track name is specified
 			if (artist is not None) and (track is not None):
 				form="%(artist)s - %(track)s.%(ext)s"
 				YDL_OPTS['outtmpl']=f"{output_dir}/{form}"
+				title=f"{artist} - {track}"
 			else: # Attempt download with the current format
-				try:
-					ydl.download([link])
-				except Exception:
-					print(f"There was an error on: {link}")
+				title=info_dict.get('title', None)
+				#try:
+				ydl.download([link])
+				if clean:
+					clean_file_name(title,output_dir)
+				#except Exception:
+				#	print(f"There was an error on: {link}")
 				print("")
 				continue
 		# Set the new format and Download
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			try:
-				ydl.download([link])	
+				ydl.download([link])
+				if clean:
+					clean_file_name(title,output_dir)
 			except Exception:
 				print(f"There was an error on: {link}")
 		# Go back to the default format
 		YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
-		print("")	
+		print("")
+
+
+
 
 if __name__ == '__main__':
 
 	parser=argparse.ArgumentParser(description='Youtube mp3 downloader.')
 	parser.add_argument('-u', '--url', type=str, required=True, help='Youtube Playlist/Track URL.')
 	parser.add_argument('-o', '--output', type=str, default=OUTPUT_DIR, help='Specify an output directory name.')
+	parser.add_argument('-c', '--clean', action="store_true", help="If clean the names of the files after download.")
 	args=parser.parse_args()
 
 	# Create the output directory
@@ -88,4 +110,4 @@ if __name__ == '__main__':
 	print(f"Track(s) will be downloaded to: {args.output}")
 
 	# Download
-	main(args.url, args.output)
+	main(args.url,args.output,clean=args.clean)
