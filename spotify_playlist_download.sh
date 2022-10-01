@@ -12,7 +12,7 @@ conda activate youtube
 
 # Get the track information
 echo "Getting Playlist Information..."
-python emd/spotify_crawler.py -u=$URI
+python emd/scrape_spotify.py -u=$URI
 
 # Find the last json file created
 playlist_path=$(find "Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
