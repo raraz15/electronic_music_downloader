@@ -36,7 +36,7 @@ if __name__ == '__main__':
     for i, query_dict in enumerate(queries_dict.values()):
         print(f"{i+1}/{len(queries_dict)}")
         try:
-            main(query_dict['Link'], output_dir, verbose=False)
+            main(query_dict['Youtube_URL'], output_dir, verbose=False)
         except KeyboardInterrupt:
             sys.exit()
         except Exception as ex: 
