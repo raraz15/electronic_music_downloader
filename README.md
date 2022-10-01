@@ -4,12 +4,11 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 
 ## TODO: 
 - [ ] Update the environment file
-- [ ] Path of the dummy client info      
-- [ ] Fix the search algorithm prints
-- [ ] Spotify Client Information doc 
-- [ ] spotify playlist URI doc
-- [ ] Remove (Visualizer)
+- [ ] Path of the dummy client info
+- [ ] Spotify Client, URI Information doc 
+- [ ] Remove stuff like (Visualizer) from the downloaded file
 - [ ] Beatport dict chart info and tracks
+- [ ] Download the LOFI part from beatport
 
 ## Installation
 
