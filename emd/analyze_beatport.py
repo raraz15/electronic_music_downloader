@@ -15,53 +15,10 @@ import matplotlib.pyplot as plt
 from info import CHARTS_DIR # Default directory
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 
-def create_tracks_garbage(url):
-    html=requests.get(url).content
-    bsObj=BeautifulSoup(html, 'lxml')
-    my_script=bsObj.find("script", {"id": "data-objects"})
-    my_string=my_script.string
-    tracks_garbage=split_to_tracks(my_string)
-    return tracks_garbage
 
-def split_to_tracks(my_string):
-    """
-    Splits the soup string into tracks.
-    """
-    
-    pattern=r'"artists": \['
-    artist_matches=[(m.start(0), m.end(0)) for m in re.finditer(pattern, my_string)]
-    track_dict_indices=[(artist_matches[i][0],artist_matches[i+1][0]) for i in range(len(artist_matches)-1)]
-    tracks=[my_string[s:e] for s,e in track_dict_indices]
-    return tracks
-
-def get_between_two_patterns(track, pattern1, pattern2):
-    """
-    This method will return the desired string that resides between the two patterns.
-    """
-    start_idx=re.search(pattern1, track).end()
-    end_idx=re.search(pattern2, track[start_idx:]).start()
-    return track[start_idx:][:end_idx]
-
-def find_release_date(track):    
-    return get_between_two_patterns(track, r'"released": "', r'"}, "duration"')
-
-def find_label(track):        
-    return get_between_two_patterns(track, r'"label": .*? "name": "', r'", "slug"')
-
-def find_title(track):  
-    return get_between_two_patterns(track, r'"release": .*? "name": "', r'", "slug"')
-
-def find_mix_type(track):    
-    return get_between_two_patterns(track, r'"mix": "', r'", "name"')
-
-def find_duration(track):
-    duration_idx=re.search(r'"minutes": "',track).end()
-    return track[duration_idx:duration_idx+4]
-
-# TODO min/maj vs M/m ??
 def key_formatter(key):
-    key=re.sub(r'\\u266f', "b", key)
-    key=re.sub(r'\\u266d', "#", key)
+    key=re.sub(r'\u266f', "b", key)
+    key=re.sub(r'\u266d', "#", key)
     scale_type=key[-3:]
     root=key.split(scale_type)[0]
     if ' ' in root:
@@ -83,79 +40,36 @@ def sharpen_flats(root):
         root="{}#".format(sharpened_root)      
     return root
 
-def find_key(track):
-    key=get_between_two_patterns(track, r'"key": "', r'", "label":')  
-    key=key_formatter(key)
-    return key
+def split_to_tracks(my_string):
+    """Splits the soup string into track_dicts."""
+    split='{"active":'
+    lst=my_string.split(split)
+    if len(lst)!=101:
+        print("Split went wrong!")
+    track_dicts={}
+    for i in range(1,101):
+        track_str=lst[i]
+        if i==100:
+            loc=track_str.find(";\n")
+            track_str=track_str[:loc] # Remove garbage
+        track_str=split+track_str   # Add the removed part from the split
+        track_str=track_str[:-2] # Remove the space at the end
+        track=json.loads(track_str)
+        track_dicts[i]={'Title': track["release"]["name"],
+                      'Mix': track["mix"],
+                      'Duration': track["duration"]["minutes"],
+                      'Artist(s)': ", ".join([artist["name"] for artist in track["artists"]]),
+                      'Remixers': ", ".join([artist["name"] for artist in track["remixers"]]),
+                      'BPM': track["bpm"],
+                      'Key': key_formatter(track["key"]),
+                      'Label': track["label"]["name"],
+                      'Released': track["date"]["released"],
+                      'Image Links': track["images"]["medium"]["url"],
+                      'Preview': track["preview"]["mp3"]["url"]
+                    }
+    return track_dicts
 
-def find_bpm(track):  
-    bpm_idx=re.search(r'"bpm": ', track).end()
-    return track[bpm_idx:bpm_idx+3]
-
-def find_image_links(track):
-    large_end=re.search(r'"large": .*? "url": "',track).end()
-    mid_start, mid_end=re.search(r'"medium": .*? "url": "',track).span()
-    link_end=re.search(r'", "width"' ,track[large_end:mid_start]).start()
-    large_link=track[large_end:mid_start][:link_end]
-    small_start=re.search(r'"small": .*? "url": "',track).start()
-    link_end=re.search(r'", "width"' ,track[mid_end:small_start]).start()
-    small_link=track[mid_end:small_start][:link_end]
-    return (large_link,small_link)
-
-def find_artists(track):
-    artists_list_idx=(track.find('"artists": '),track.find(', "audio_format"')) # only gives single artist
-    artists= track[artists_list_idx[0]:artists_list_idx[1]]
-    artist_garbage_list=artists.split('"name": ')
-    total_artist_list=[]
-    for garbage in artist_garbage_list[1:]:
-        artist_name=garbage.split(', "slug"')[0]
-        artist_name= artist_name.replace('"','') # Get rid of quotation marks
-        total_artist_list.append(artist_name)
-    artists=artists_for_title(total_artist_list)         
-    return artists
-
-def artists_for_title(artists_list):
-    artist_no=len(artists_list)
-    if artist_no == 1:
-        artists=artists_list[0]
-    elif artist_no>1:
-        artists=artists_list[0]
-        for i in range(1,artist_no):
-            artists += ", {}".format(artists_list[i])
-    else:
-        print('Not enough artist names!')  
-    return artists
-
-def find_remixers(track):
-    remixer_name=''
-    rmx_idx=track.find('"remixers": ')
-    sale_type_idx=track.find('"sale_type": ')
-    rmx_garbage=track[rmx_idx:sale_type_idx]
-    rmx_garbage2=rmx_garbage.split('"name": ')[-1]
-    if rmx_garbage2 != rmx_garbage:
-        remixer_name=rmx_garbage2.split(', "slug"')[0]
-        remixer_name=remixer_name.replace('"','') # Get rid of quotation marks    
-    return remixer_name
-
-def create_track_dict(track, idx): 
-    track_dict={'Title': find_title(track),
-              'Mix': find_mix_type(track),
-              'Duration': find_duration(track),
-              'Artist(s)':find_artists(track),
-              'BPM': find_bpm(track),
-              'Key': find_key(track),
-              'Label': find_label(track),
-              'Chart #': idx,
-              'Released': find_release_date(track),
-              'Image Links': find_image_links(track)
-            }
-    #Check if remixer exists
-    remixer_name=find_remixers(track)
-    if remixer_name != '':
-        track_dict['Remixer(s)']=remixer_name      
-    return track_dict
-
-# TODO: Fix the 99 bug
+# TODO: Replace latin characters of artist names
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Beatport Top100 Analyzer')
@@ -172,8 +86,10 @@ if __name__ == '__main__':
     print(f"{SIMPLE_NAME} - Top 100")
 
     # Extract the track information
-    tracks_garbage=create_tracks_garbage(args.url)
-    tracks={idx+1: create_track_dict(track, idx+1)  for idx,track in enumerate(tracks_garbage)} # Use 1 index
+    html=requests.get(args.url).content
+    bsObj=BeautifulSoup(html, 'lxml')
+    my_script=bsObj.find("script", {"id": "data-objects"})
+    tracks=split_to_tracks(my_script.string)
     print("Top Track:")
     print(json.dumps(tracks[1],indent=4))
 
