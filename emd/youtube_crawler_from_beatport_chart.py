@@ -89,7 +89,7 @@ def get_best_link_for_track(customSearch, query, artist, label, audio_duration):
 def find_link_single_track(track_dict, N, idx=None):
     """Takes a single track dict, and makes a query to Youtube."""
     if idx is not None: 
-        print("-"*30+f"{idx+1}"+"-"*30)
+        print("-"*35+f"{idx+1}"+"-"*35)
     query=form_query(track_dict) 
     try:
         customSearch=VideosSearch(query, limit=N)
@@ -106,7 +106,6 @@ def find_link_single_track(track_dict, N, idx=None):
         exception_str=''.join(traceback.format_exception(etype=type(ex), value=ex, tb=ex.__traceback__))
         print(exception_str+'\n')
 
-# TODO: UTF before making a query! or enforce it in beatport_analyzer!!
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Youtube Searcher from Beatport chart')
@@ -125,13 +124,13 @@ if __name__ == '__main__':
 
     # Create a dict containing queries for each of the tracks in the chart. 
     print("Making queries for each of the tracks...")
-    print("="*60)        
+    print("="*70)        
     query_dict={}
     for i, track_dict in enumerate(chart.values()):
         link, query=find_link_single_track(track_dict, args.N, i)
         if link:
             query_dict[i]={**track_dict, **{'Link': link, 'Query': query}}
-    print("="*60)        
+    print("="*70)        
     print("\n{} links are returned.".format(len(query_dict)))
 
     # Export the query dict
