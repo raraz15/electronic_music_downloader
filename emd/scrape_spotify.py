@@ -1,4 +1,5 @@
 import os
+import unicodedata
 import requests
 import argparse
 import datetime as dt
@@ -9,6 +10,16 @@ from info import PLAYLIST_DIR # Default download directory
 
 AUTH_URL='https://accounts.spotify.com/api/token'
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%y")
+
+def replace_non_ascii(str):
+    str=unicodedata.normalize('NFKD', str).encode('ascii', 'ignore')
+    str=str.decode("utf-8") # For json dump
+    return str
+
+def make_name(name_dict_list):
+    name=", ".join([artist["name"] for artist in name_dict_list])
+    name=replace_non_ascii(name)
+    return name    
 
 if __name__ == "__main__":
 
@@ -51,8 +62,8 @@ if __name__ == "__main__":
         playlist_dct=r.json()
         for j,item in enumerate(playlist_dct['items']):
             track=item['track']
-            track_dicts[i*100+j]={'Title': track['name'],
-                                'Artist(s)': ', '.join([artist_dict['name'] for artist_dict in track['artists']]),
+            track_dicts[i*100+j]={'Title': replace_non_ascii(track['name']),
+                                'Artist(s)': make_name(track['artists']),
                                 'Album Name': track['album']['name'],
                                 'Album Type': track['album']['type'],
                                 'Duration(sec)': track['duration_ms']//1000,

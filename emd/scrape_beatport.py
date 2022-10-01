@@ -40,10 +40,14 @@ def sharpen_flats(root):
         root="{}#".format(sharpened_root)      
     return root
 
+def replace_non_ascii(str):
+    str=unicodedata.normalize('NFKD', str).encode('ascii', 'ignore')
+    str=str.decode("utf-8") # For json dump
+    return str
+
 def make_name(name_dict_list):
     name=", ".join([artist["name"] for artist in name_dict_list])
-    name=unicodedata.normalize('NFKD', name).encode('ascii', 'ignore') # Replace é with e
-    name=name.decode("utf-8") # For json dump
+    name=replace_non_ascii(name)
     return name
 
 def split_to_tracks(my_string):
@@ -61,7 +65,7 @@ def split_to_tracks(my_string):
         track_str=split+track_str   # Add the removed part from the split
         track_str=track_str[:-2] # Remove the space at the end
         track=json.loads(track_str) # Convert the track soup to dict
-        track_dicts[i]={'Title': track["release"]["name"],
+        track_dicts[i]={'Title': replace_non_ascii(track["release"]["name"]),
                       'Mix': track["mix"],
                       'Artist(s)': make_name(track["artists"]),
                       'Remixer(s)': make_name(track["remixers"]),
