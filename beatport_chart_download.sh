@@ -12,7 +12,7 @@ conda activate youtube
 
 # Get the track information
 echo "Getting Chart Information..."
-python emd/analyze_beatport.py -u=$URL --save-figure
+python emd/scrape_beatport.py -u=$URL --save-figure
 
 # Find the last json file created
 chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
