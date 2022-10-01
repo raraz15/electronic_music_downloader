@@ -1,5 +1,4 @@
-import os,sys
-import re
+import os
 import requests
 import argparse
 import datetime as dt
@@ -10,39 +9,6 @@ from info import PLAYLIST_DIR # Default download directory
 
 AUTH_URL='https://accounts.spotify.com/api/token'
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%y")
-
-def title_formater(name, artists):
-    """ Puts the Artist, Track Title, Mix Type information in a standard format"""
-
-    artists=', '.join(artists)
-
-    # Find the type of mix (Extended, Original, Club,...)
-    mix_search=re.search(r"\s-\s.*?mix", name.lower())
-    if mix_search:
-        mix=name[mix_search.start():mix_search.end()]
-        mix=re.sub(r"\s-\s", "", mix) # remove the spaces and the hyphen        
-        name=name[:mix_search.start()] + name[mix_search.end():] # remove the match from the string
-    else:
-        mix=''
-
-    # Find out if its some artist's edit
-    edit_search=re.search(r"\s-\s.*?edit", name.lower())
-    if edit_search:
-        edit=name[edit_search.start():edit_search.end()]
-        edit=re.sub(r"\s-\s", "", edit)
-        name=name[:edit_search.start()] + name[edit_search.end():] # remove the match from the string
-    else:
-        edit=''
-    
-    # Combine everything
-    title='{} - {}'.format(artists, name)
-    if mix:
-        title += ' ({})'.format(mix)
-    if edit:
-        title += ' ({})'.format(edit)
-
-    return title
-
 
 if __name__ == "__main__":
 
@@ -80,25 +46,20 @@ if __name__ == "__main__":
     # Start crawling
     track_dicts={}
     for i in range((N//100)+1):
-        # Spotify can only return 100 tracks at each request,
-        # offset 100 tracks until there is no track left
+        # Spotify can only return 100 tracks at each request, offset 100 tracks until there is no track left
         r=requests.get(f"{URL}/tracks", params={'offset': i*100}, headers=headers)
         playlist_dct=r.json()
-        for item in playlist_dct['items']:
+        for j,item in enumerate(playlist_dct['items']):
             track=item['track']
-            artists=track['artists']
-            track_name=track['name'] # string
-            album=track['album'] # dict
-            artist_names=[artist_dict['name'] for artist_dict in artists]
-            track_dicts[track_name]={'Title': title_formater(track_name, artist_names),
-                                    'Artist(s)': artist_names,
-                                    'Album Name': album['name'],
-                                    'Album Type': album['type'],
-                                    'Duration': (track['duration_ms']/1000),
-                                    'Release': album['release_date'],
-                                    'Images': album['images'],
-                                    'Popularity': track['popularity']
-                                    }
+            track_dicts[i*100+j]={'Title': track['name'],
+                                'Artist(s)': ', '.join([artist_dict['name'] for artist_dict in track['artists']]),
+                                'Album Name': track['album']['name'],
+                                'Album Type': track['album']['type'],
+                                'Duration(sec)': track['duration_ms']//1000,
+                                'Release': track['album']['release_date'],
+                                'Images': track['album']['images'],
+                                'Popularity': track['popularity']
+                                }
     print(f"{len(track_dicts)} Tracks' information is returned.") 
     
     # Export the track dicts in a json file
