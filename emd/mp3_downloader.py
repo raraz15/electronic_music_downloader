@@ -23,17 +23,22 @@ YDL_OPTS={
 		# 'preferredquality': '320' upsamples, not real 320kbps
 	}
 
-# TODO: Visualizer?
+# TODO: Visualizer/visualizer?
 # TODO: Take the Rekord Label Name?
+# TODO: Remove duble spaces
 def clean_file_name(title,output_dir):
 	clean_title=re.sub(r"\s*\(Official [a-zA-Z]*\)\s*", "", title)
-	clean_title=re.sub(r"\s*\[[a-zA-Z]*\ *]", "", clean_title)
-	clean_title=re.sub(r"\s*[O|o]ut [N|n]ow", "", clean_title)
+	clean_title=re.sub(r"\s*Official Audio\s*", "", clean_title)
+	clean_title=re.sub(r"\s*Official Video\s*", "", clean_title)
+	#clean_title=re.sub(r"\s*\[[a-zA-Z]*\ *]", "", clean_title)
+	clean_title=re.sub(r"\s*\[.*\]\s*", "", clean_title)
+	clean_title=re.sub(r"\s*[O|o]ut [N|n]ow\s*", "", clean_title)
+	clean_title=re.sub(r"\s*[V|v]isualizer\s*", "", clean_title)
+	clean_title=re.sub(r"\s{2,}",r"\s",clean_title) # Two or more spaces collapsed
 	if clean_title!=title:
-		print(f"Changing file name: {title}\n{clean_title}")
+		print(f"Cleaning file name: {clean_title}")
 		shutil.move(f"{output_dir}/{clean_title}.mp3",f"{output_dir}/{title}.mp3")
 
-# TODO: faster flattening
 def main(URL,output_dir,verbose=True,clean=False):
 	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
 	If its a playlist, first flattens the list.
@@ -74,12 +79,12 @@ def main(URL,output_dir,verbose=True,clean=False):
 				title=f"{artist} - {track}"
 			else: # Attempt download with the current format
 				title=info_dict.get('title', None)
-				#try:
-				ydl.download([link])
-				if clean:
-					clean_file_name(title,output_dir)
-				#except Exception:
-				#	print(f"There was an error on: {link}")
+				try:
+					ydl.download([link])
+					if clean:
+						clean_file_name(title,output_dir)
+				except Exception:
+					print(f"There was an error on: {link}")
 				print("")
 				continue
 		# Set the new format and Download
@@ -94,9 +99,9 @@ def main(URL,output_dir,verbose=True,clean=False):
 		YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
 		print("")
 
-
-
-
+# TODO: change the name to download_mp3
+# TODO: faster flattening
+# TODO: edit id3tag
 if __name__ == '__main__':
 
 	parser=argparse.ArgumentParser(description='Youtube mp3 downloader.')
