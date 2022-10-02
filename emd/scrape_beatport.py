@@ -87,7 +87,6 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory.')
     parser.add_argument('-N', type=int, default=10, help='Number of top entries to display.')
     parser.add_argument('-s','--save-figure', action='store_true', help='Save the figures.')
-    parser.add_argument()
     args=parser.parse_args()
 
     # Get the Genre Name from the URL
@@ -118,8 +117,8 @@ if __name__ == '__main__':
     print(f"Exported the information of {len(tracks)} tracks to: {output_path}\n")
 
     # Pretty Print Top N
-    max_title_len=max([len(track['Title']) for i,track in enumerate(tracks.values()) if i<args.N])
-    max_artist_len=max([len(track['Artist(s)']) for i,track in enumerate(tracks.values()) if i<args.N])
+    max_title_len=max([len(track['Title']) for i,track in tracks.items() if i<=args.N])
+    max_artist_len=max([len(track['Artist(s)']) for i,track in tracks.items() if i<=args.N])
     print(f"Top {args.N} Tracks:")
     print(f"| {'#':>2} | {'Title':^{max_title_len}s} | {'Artist(s)':^{max_artist_len}s} |")
     print("-"*(3+3+2+3+1+max_title_len+max_artist_len))
@@ -128,24 +127,6 @@ if __name__ == '__main__':
         artists=tracks[i]['Artist(s)']
         print(f"| {i:>2} | {title:<{max_title_len}} | {artists:<{max_artist_len}} |")
     print("-"*(3+3+2+3+1+max_title_len+max_artist_len))
-
-    # Analysis
-    key_dict,bpm_dict,label_dict,artist_dict=defaultdict(int),defaultdict(int),defaultdict(int),defaultdict(int)
-    remix_dict={'remix': 0, 'original': 0}
-    for track in tracks.values():
-        bpm_dict[track['BPM']] += 1
-        key_dict[track['Key']] += 1
-        label_dict[track['Label']] += 1
-        for artist in track['Artist(s)'].split(','):
-            artist_dict[artist.replace("$$","\$\$")] += 1  # One artist' name included $$ which was bad for OS           
-        if 'Remixer(s)' in track:
-            remix_dict['remix'] += 1
-        else:
-            remix_dict['original'] += 1
-    artist_dict=dict(sorted(artist_dict.items()))
-    key_dict=dict(sorted(key_dict.items()))
-    bpm_dict=dict(sorted(bpm_dict.items()))
-    label_dict=dict(sorted(label_dict.items()))
 
     # Plotting
     analyze_and_plot(tracks,args.save_figure,output_dir,CHART_NAME)
