@@ -1,4 +1,4 @@
-name: youtube
+name: emd
 channels:
   - defaults
 dependencies:
@@ -422,4 +422,4 @@ dependencies:
     - rfc3986==1.5.0
     - youtube-dl==2021.12.17
     - youtube-search-python==1.6.6
-prefix: /Users/recep_oguz_araz/opt/anaconda3/envs/youtube
+prefix: /Users/recep_oguz_araz/opt/anaconda3/envs/emd

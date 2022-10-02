@@ -14,7 +14,7 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 
 ### 1) Create the Environment:
 
-    `conda create --name myenv --file requirements.txt`
+    `conda create --name myenv --file environment.yml`
 
 ### 2) You will need the ffmpeg for youtube-dl.
 
