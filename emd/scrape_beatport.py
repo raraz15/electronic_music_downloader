@@ -9,7 +9,6 @@ import unicodedata
 import requests
 import argparse
 from bs4 import BeautifulSoup
-from collections import defaultdict
 
 from analyze_beatport import analyze_and_plot
 from info import CHARTS_DIR # Default directory
@@ -87,6 +86,7 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory.')
     parser.add_argument('-N', type=int, default=10, help='Number of top entries to display.')
     parser.add_argument('-s','--save-figure', action='store_true', help='Save the figures.')
+    parser.add_argument('--preview', action='store_true', help='Download the preview mp3.')
     args=parser.parse_args()
 
     # Get the Genre Name from the URL
@@ -131,3 +131,15 @@ if __name__ == '__main__':
     # Plotting
     analyze_and_plot(tracks,args.save_figure,output_dir,CHART_NAME)
     print(f"Analysis plots exported to: {output_dir}")
+
+    # Download the preview mp3s
+    if args.preview:
+        preview_dir=os.path.join(output_dir,"Preview")
+        os.makedirs(preview_dir)
+        print(f"Downloading the Preview mp3s to: {preview_dir}")
+        for i,track in tracks.items():
+            req=requests.get(track["Preview"])
+            with open(os.path.join(preview_dir,f"{track['Title']}.mp3"),"wb") as f:
+                f.write(req.content)
+
+    print("Done!")

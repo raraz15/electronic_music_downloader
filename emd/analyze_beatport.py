@@ -26,7 +26,7 @@ def analyze_and_plot(tracks,save_figure,output_dir,chart_name):
         else:
             remix_dict['original'] += 1
     artist_dict=dict(sorted(artist_dict.items()))
-    key_dict=dict(sorted(key_dict.items()))               
+    key_dict=dict(sorted(key_dict.items()))
     bpm_dict=dict(sorted(bpm_dict.items()))
     label_dict=dict(sorted(label_dict.items())) 
 
