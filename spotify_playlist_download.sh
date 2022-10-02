@@ -28,7 +28,7 @@ query_path=$(find "Queries" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head
 # Download each track
 echo
 echo "Starting the download..."
-python emd/download_queries.py -p=$query_path
+python emd/download_queries.py -p=$query_path --clean
 
 # ====================================================================================
 
