@@ -7,7 +7,6 @@ from mp3_downloader import main
 
 from info import DOWNLOAD_DIR, QUERY_DIR # Default directories
 
-
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Youtube mp3 downloader from queries.json.')
