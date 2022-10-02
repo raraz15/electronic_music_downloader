@@ -86,7 +86,8 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--url', type=str, required=True, help='URL of the Top100 site.')
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory.')
     parser.add_argument('-N', type=int, default=10, help='Number of top entries to display.')
-    parser.add_argument('--save-figure', action='store_true', help='Save the figures.')
+    parser.add_argument('-s','--save-figure', action='store_true', help='Save the figures.')
+    parser.add_argument()
     args=parser.parse_args()
 
     # Get the Genre Name from the URL
@@ -104,7 +105,7 @@ if __name__ == '__main__':
     print(json.dumps(tracks[1],indent=4))
 
     # If user specified a directory, overwrite the default
-    if args.output!='': 
+    if args.output!='':
         output_dir=args.output
     else:
         output_dir=os.path.join(CHARTS_DIR, CHART_NAME)
@@ -142,7 +143,7 @@ if __name__ == '__main__':
         else:
             remix_dict['original'] += 1
     artist_dict=dict(sorted(artist_dict.items()))
-    key_dict=dict(sorted(key_dict.items()))               
+    key_dict=dict(sorted(key_dict.items()))
     bpm_dict=dict(sorted(bpm_dict.items()))
     label_dict=dict(sorted(label_dict.items()))
 
