@@ -23,21 +23,24 @@ YDL_OPTS={
 		# 'preferredquality': '320' upsamples, not real 320kbps
 	}
 
-# TODO: Visualizer/visualizer?
-# TODO: Take the Rekord Label Name?
-# TODO: Remove duble spaces
 def clean_file_name(title,output_dir):
-	clean_title=re.sub(r"\s*\(Official [a-zA-Z]*\)\s*", "", title)
-	clean_title=re.sub(r"\s*Official Audio\s*", "", clean_title)
+	clean_title=re.sub("\s\s+"," ",title)      # Multiple
+	clean_title=re.sub("\A\s+","",clean_title) # Leading 
+	clean_title=re.sub("\s+\Z","",clean_title) # Trailing
+	clean_title=re.sub(r"\s*\(Official.*\)\s*", "",clean_title) # (Official.)
+	clean_title=re.sub(r"\s*Official Audio\s*", "", clean_title) # Official.
 	clean_title=re.sub(r"\s*Official Video\s*", "", clean_title)
-	#clean_title=re.sub(r"\s*\[[a-zA-Z]*\ *]", "", clean_title)
-	clean_title=re.sub(r"\s*\[.*\]\s*", "", clean_title)
-	clean_title=re.sub(r"\s*[O|o]ut [N|n]ow\s*", "", clean_title)
-	clean_title=re.sub(r"\s*[V|v]isualizer\s*", "", clean_title)
-	clean_title=re.sub(r"\s{2,}",r"\s",clean_title) # Two or more spaces collapsed
+	m=re.search(r"\[.*[M|m]ix\]",clean_title) # Replace [] with ()
+	if m:
+		clean_title=clean_title[:m.start()]+f"({m[0][1:-1]})"+clean_title[m.end():]
+	clean_title=re.sub(r"\s*\[.*\]\s*","",clean_title) # [.]
+	clean_title=re.sub(r"\*.*\*","",clean_title) # * *
+	clean_title=re.sub(r"\s*[O|o]ut [N|n]ow\s*","",clean_title) # Out Now
+	clean_title=re.sub(r"\s*[V|v]isualizer\s*","",clean_title) # Visualizer
+	#clean_title=re.sub(r"\(\)","",clean_title) # If () remains
 	if clean_title!=title:
-		print(f"Cleaning file name: {clean_title}")
-		shutil.move(f"{output_dir}/{clean_title}.mp3",f"{output_dir}/{title}.mp3")
+		print(f"Changing {title} to: {clean_title}")
+		shutil.move(f"{output_dir}/{title}.mp3",f"{output_dir}/{clean_title}.mp3")
 
 def main(URL,output_dir,verbose=True,clean=False):
 	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
@@ -70,8 +73,8 @@ def main(URL,output_dir,verbose=True,clean=False):
 			if int(info_dict.get('asr', None))<44100:
 				print("Low sampling rate! Skipping.")
 				continue
-			artist=info_dict.get('artist', None)
-			track=info_dict.get('track', None)
+			artist=info_dict.get('artist',None)
+			track=info_dict.get('track',None)
 			# Change the formatting if artist and track name is specified
 			if (artist is not None) and (track is not None):
 				form="%(artist)s - %(track)s.%(ext)s"
