@@ -37,7 +37,6 @@ def clean_file_name(title,output_dir):
 	clean_title=re.sub(r"\*.*\*","",clean_title) # * *
 	clean_title=re.sub(r"\s*[O|o]ut [N|n]ow\s*","",clean_title) # Out Now
 	clean_title=re.sub(r"\s*[V|v]isualizer\s*","",clean_title) # Visualizer
-	#clean_title=re.sub(r"\(\)","",clean_title) # If () remains
 	if clean_title!=title:
 		print(f"Changing {title} to: {clean_title}")
 		shutil.move(f"{output_dir}/{title}.mp3",f"{output_dir}/{clean_title}.mp3")
