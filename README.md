@@ -11,30 +11,30 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 
 ### 1) Create the Environment:
 
-    `conda create --name emd --file environment.yml`
+    conda create --name emd --file environment.yml
 
 ### 2) You will need the ffmpeg for youtube-dl.
 
     For MacOS: 
 
-        `brew install ffmpeg`
+        brew install ffmpeg
 
     For Linux:
 
-        `sudo apt-get install ffmpeg`
-        
+        sudo apt-get install ffmpeg
+
 
 ### 3) Make the bash files executable
 
     Using the terminal in the current directory:
 
-    `chmod u+x spotify_playlist_download.sh`
-    `chmod u+x beatport_chart_download.sh`
+    chmod u+x spotify_playlist_download.sh
+    chmod u+x beatport_chart_download.sh
 
 
 ### 4) Activate the environment
 
-    `conda activate emd`
+    conda activate emd
 
 ### 5) Get Spotify Client Information (optional)
     This part is only for using the spotify functionalities of the repository.
@@ -54,13 +54,13 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 
 ##### 1) Get the URL of the Beatport Chart
 
-    Replace the URL in `beatport_chart_download.sh` where it is indicated.
+    Replace the URL in beatport_chart_download.sh where it is indicated.
     
 ##### 2) Run the bash script
 
     From the terminal,
 
-    `./beatport_chart_download.sh`
+    ./beatport_chart_download.sh
 
 
 #### Get metadata and Download mp3 files from a Spotify Playlist
@@ -77,7 +77,7 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 
     From the terminal,
 
-    `./spotify_playlist_download.sh`
+    ./spotify_playlist_download.sh
 
 
 ### B) Single task python scripts
