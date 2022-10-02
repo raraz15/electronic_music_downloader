@@ -8,7 +8,7 @@ URL="https://www.beatport.com/genre/tech-house/11/top-100"
 source ~/.bash_profile
 
 # Activate the conda environment
-conda activate youtube
+conda activate emd
 
 # Get the track information
 echo "Getting Chart Information..."
@@ -29,7 +29,7 @@ query_path="$(basename $chart_path .json)-Queries.json"
 # Download each track
 echo
 echo "Starting the download..."
-python emd/download_queries.py -p=$query_path
+python emd/download_queries.py -p=$query_path --clean
 
 # ====================================================================================
 echo "Done!"

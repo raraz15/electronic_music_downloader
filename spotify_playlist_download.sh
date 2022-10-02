@@ -8,7 +8,7 @@ URI="spotify:playlist:1cSukodzZOmPh6LtRGFmn9"
 source ~/.bash_profile
 
 # Activate the conda environment
-conda activate youtube
+conda activate emd
 
 # Get the track information
 echo "Getting Playlist Information..."
