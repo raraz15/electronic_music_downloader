@@ -117,5 +117,6 @@ if __name__ == '__main__':
     chart_name=os.path.splitext(os.path.basename(chart_path))[0]
 
     # Analyze and plot
-    analyze_and_plot(chart,args.save_figure,output_path,chart_name)
+    save_figure=True if args.output else args.save_figure
+    analyze_and_plot(chart,save_figure,output_path,chart_name)
     print("Done!")
