@@ -15,7 +15,7 @@ playlist_path=$(find "Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t |
 # Find the Youtube URLs
 echo
 echo "Getting Youtube links..."
-python emd/youtube_crawler.py -p=$playlist_path
+python emd/youtube_searcher.py -p=$playlist_path
 
 # Find the last json file created
 query_path=$(find "Queries" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)

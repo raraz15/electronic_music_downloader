@@ -15,7 +15,7 @@ chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head 
 # Find the Youtube URLs
 echo
 echo "Getting Youtube links..."
-python emd/youtube_crawler.py -p=$chart_path
+python emd/youtube_searcher.py -p=$chart_path
 
 # Use the name of the chart to get the query path
 query_path="$(basename $chart_path .json)-Queries.json"
