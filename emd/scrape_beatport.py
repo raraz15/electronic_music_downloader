@@ -85,8 +85,8 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--url', type=str, required=True, help='URL of the Top100 site.')
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory.')
     parser.add_argument('-N', type=int, default=10, help='Number of top entries to display.')
-    #parser.add_argument('-a','--analyze', action='store_true', help='Analyze the chart.')
-    parser.add_argument('-s','--save-figure', action='store_true', help='Save the figures.')
+    parser.add_argument('-a','--analyze', action='store_true', help='Analyze the chart.')
+    parser.add_argument('-s','--save-figure', action='store_true', help='Save the analyzed figures.')
     parser.add_argument('--preview', action='store_true', help='Download the preview mp3.')
     args=parser.parse_args()
 
@@ -130,9 +130,9 @@ if __name__ == '__main__':
     print("-"*(3+3+2+3+1+max_title_len+max_artist_len))
 
     # Plotting
-    #if args.analyze:
-    analyze_and_plot(tracks,args.save_figure,output_dir,CHART_NAME)
-    print(f"Analysis plots exported to: {output_dir}")
+    if args.analyze:
+        analyze_and_plot(tracks,args.save_figure,output_dir,CHART_NAME)
+        print(f"Analysis plots exported to: {output_dir}")
 
     # Download the preview mp3s
     if args.preview:

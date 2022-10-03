@@ -7,7 +7,7 @@ conda activate emd
 
 # Get the track information
 echo "Getting Chart Information..."
-python emd/scrape_beatport.py -u=$1 --save-figure
+python emd/scrape_beatport.py -u=$1
 
 # Find the last json file created
 chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
@@ -19,7 +19,6 @@ python emd/youtube_crawler.py -p=$chart_path
 
 # Use the name of the chart to get the query path
 query_path="$(basename $chart_path .json)-Queries.json"
-#query_path="$query_path"
 
 # Download each track
 echo
