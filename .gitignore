@@ -1,10 +1,10 @@
 # Personal
 .DS_Store
 
-#Tracks/*
+Tracks/*
 Playlists/*
-#Queries/*
-#Charts/*
+Queries/*
+Charts/*
 Crawls/*
 
 *.mp3
