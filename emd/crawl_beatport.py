@@ -44,7 +44,7 @@ if __name__=="__main__":
         charts[genre]=tracks
         print(f"\n{genre} Top Track:")
         print(json.dumps(tracks[1],indent=4))
-        
+
     # If user specified a directory, overwrite the default
     if args.output!='':
         output_dir=args.output
@@ -60,4 +60,4 @@ if __name__=="__main__":
         output_path=os.path.join(output_dir,chart_name+".json")
         with open(output_path,'w', encoding='utf8') as outfile:
             json.dump(tracks, outfile, indent=4)
-        print(f"Exported the information of {len(tracks)} tracks to: {output_path}\n")
+        print(f"Exported {len(tracks)} track information to: {output_path}\n")
