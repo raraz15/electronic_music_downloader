@@ -51,7 +51,7 @@ conda activate emd
 
 This part is only for using the Spotify functionalities of the repository.
 
-To get information from your Spotify playlists, you will need the CLIENT_ID,CLIENT_SECRET keys of the user (you). You can get these information following the steps in: https://developer.Spotify.com/documentation/general/guides/authorization/app-settings/
+To get information from your Spotify playlists, you will need the `CLIENT_ID,CLIENT_SECRET` keys of the user. You can get these information following the steps in: https://developer.Spotify.com/documentation/general/guides/authorization/app-settings/
 
 When you have these information, paste them in `spotify_client_info.json`
 
@@ -66,7 +66,7 @@ The beatport_chart_download pipeline does 3 things in series.
 2. Makes Youtube searches for finding these tracks.
 3. Only downloads the tracks if they satisfy certaion criteria.
 
-The spotify_playlist_download.sh pipeline does the same as above, with only the exception of it gets the track information from a Spotify playlist. To use this functionality you should follow Installation [part 5](#5-get-spotify-client-information-optional).
+The spotify_playlist_download.sh pipeline does the same as above, but it gets the track information from a Spotify playlist. To use this functionality you should follow Installation [Part 5](#5-get-spotify-client-information-optional).
 
 Example of a track metadata:
 
@@ -94,7 +94,7 @@ Example of a track metadata:
 From the terminal,
 
 ```bash
-./beatport_chart_download.sh <URL_of_the_Top100_Chart>
+./beatport_chart_download.sh <Top100_Chart_URI>
 ```
 
 #### Get metadata of a Spotify Playlist and Download mp3 files from Youtube
@@ -103,7 +103,7 @@ To get the URI, open Spotify App from your computer, go to the playlist, click o
 
 From the terminal,
 ```bash
-./spotify_playlist_download.sh <URI>
+./spotify_playlist_download.sh <Spotify_playlist_URI>
 ```
 
 ### B) Single Task Python Scripts
@@ -113,9 +113,9 @@ Each of the scripts have a default directory where the outputs will be written. 
 ```bash
 python emd/scrape_beatport.py -u=<URL> --analyze --save-figure --preview
 ```
-`--analyze`: Will perform Key, BPM, Label, Artist analysis
-`--save-figure`: Will save these figures
-`--preview`: Will download the LoFi Preview mp3 of the tracks
+`--analyze`: Will perform Key, BPM, Label, Artist analysis<br>
+`--save-figure`: Will save these figures<br>
+`--preview`: Will download the LoFi Preview mp3 of the tracks<br>
 
 #### Beatport Chart Analysis
 ```bash
@@ -133,7 +133,7 @@ python emd/crawl_beatport.py --preview
 ```bash
 python emd/scrape_spotify.py -u=<URI>
 ```
-It will save the track information of the playlist with provided URI
+It will save the track information of the playlist with provided URI<br>
 If output_dir not provided Playlists/playlist_name
 
 #### Youtube Searcher
@@ -146,13 +146,13 @@ python/youtube_searcher.py -p=<chart_or_playlist_json_path> -N=5
 ```bash
 python emd/mp3_downloader.py -u=<track_or_playlist_youtube_URL> --clean
 ```
-`--clean`: after a track is downloaded its name will be cleaned and formatted
-
-It will try to download the best possible bit rate, which is 128 kbps for Youtube.
+`--clean`: after a track is downloaded its name will be cleaned and formatted<br>
+<br>
+It will try to download the best possible bit rate, which is 128 kbps for Youtube.<br>
 
 #### Chart and Playlist Downloader
 ```bash
 python/download_queries.py -p=<queries_json_path> --clean
 ```
-Downloads all the tracks in the query.json file
-`--clean`: after a track is downloaded its name will be cleaned and formatted
+Downloads all the tracks in the query.json file<br>
+`--clean`: after a track is downloaded its name will be cleaned and formatted<br>
