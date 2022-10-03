@@ -7,7 +7,7 @@ import datetime as dt
 from bs4 import BeautifulSoup
 
 from scrape_beatport import split_to_tracks
-from info import CHARTS_DIR
+from info import CRAWL_DIR
 
 URL="https://www.beatport.com"
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
@@ -50,7 +50,7 @@ if __name__=="__main__":
     if args.output!='':
         output_dir=args.output
     else:
-        output_dir=os.path.join(CHARTS_DIR, f"Crawl-BeatportTop100-{DATE}")
+        output_dir=os.path.join(CRAWL_DIR, f"BeatportTop100-{DATE}")
     os.makedirs(output_dir, exist_ok=True)
     print(f"Exporting the charts to: {output_dir}")
 

@@ -6,3 +6,4 @@ PLAYLIST_DIR='Playlists'
 CHARTS_DIR="Charts"
 QUERY_DIR='Queries'
 DOWNLOAD_DIR='Downloads'
+CRAWL_DIR="Crawls"
