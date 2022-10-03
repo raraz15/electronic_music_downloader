@@ -25,6 +25,4 @@ echo
 echo "Starting the download..."
 python emd/download_queries.py -p=$query_path --clean
 
-# ====================================================================================
-
 echo "Done!"
