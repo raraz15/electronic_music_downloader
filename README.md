@@ -1,20 +1,20 @@
 # electronic_music_downloader
 
-A repository for downloading electronic music from YouTube with Spotify and Beatport scraping and crawling capacities. It could be used for other genres of music but our query algorithm is designed for electronic music traditions (House music oriented).
+A repository for obtaining metadata about electronic music tracks collected in Spotify Playlists or Beatport Top100 charts. It can make a youtube search and download medium quality mp3 files of these tracks. It can also crawl Beatport and get metadata for all electronic music genres and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks.
 
 ## Table of Contents
 * [Installation](#installation)
-### [List of Functions]:
+### List of Functions:
 * [Get metadata from a Spotify Playlist](#spotify-scraper)
 * [Get metadata from a Beatport Top100 Chart](#beatport-scraper)
 * [Analyze and plot distributions of a Beatport Top100 Chart](#beatport-chart-analysis)
-* [Download LoFi Beatport Preview mp3s of a Top100 Chart](#beatport-scraper)
-* [Crawl Beatport to get metadata and Preview mp3s of all Top100 Charts (genre-by-genre)](#beatport-crawler)
+* [Download LoFi Beatport Preview mp3 files of a Top100 Chart](#beatport-scraper)
+* [Crawl Beatport to get metadata and Preview mp3 files of all Top100 Charts (genre-by-genre)](#beatport-crawler)
 * [Make a Youtube search to find tracks uploaded to Youtube by the Artist or Label](#youtube-searcher)
-* [Download mp3s only if original sampling rate>44.1kHz with preferably 128kbps at 16 bits](#youtube-mp3-downloader)
+* [Download mp3 files only if original sampling rate>44.1kHz with preferably 128kbps at 16 bits](#youtube-mp3-downloader)
 ### Pipelines
-* [Get metadata and download the mp3s of tracks of a Spotify Playlist with a pipeline](#get-metadata-of-a-spotify-playlist-and-download-mp3-files-from-youtube)
-* [Get metadata and download the mp3s of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-top100-chart-and-download-mp3-files-from-youtube)
+* [Get metadata and download the mp3 files of tracks of a Spotify Playlist with a pipeline](#get-metadata-of-a-spotify-playlist-and-download-mp3-files-from-youtube)
+* [Get metadata and download the mp3 files of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-top100-chart-and-download-mp3-files-from-youtube)
 ### TODO:
 - [ ] Path of the dummy client info (before making public)
 - [ ] Edit id3tag (update environment)
