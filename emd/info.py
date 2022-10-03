@@ -5,5 +5,5 @@ CLIENT_INFO_PATH="/Users/recep_oguz_araz/Desktop/Projects/spotify_client_info.js
 PLAYLIST_DIR='Playlists'
 CHARTS_DIR="Charts"
 QUERY_DIR='Queries'
-DOWNLOAD_DIR='Downloads'
+TRACKS_DIR='Tracks'
 CRAWL_DIR="Crawls"

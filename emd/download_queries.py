@@ -5,7 +5,7 @@ import argparse
 
 from mp3_downloader import main
 
-from info import DOWNLOAD_DIR, QUERY_DIR # Default directories
+from info import TRACKS_DIR, QUERY_DIR # Default directories
 
 if __name__ == '__main__':
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     else:
         query_name=os.path.splitext(os.path.basename(query_path))[0]
         query_name=re.sub(r'-Queries', '', query_name) # Remove "Queries"
-        output_dir=os.path.join(DOWNLOAD_DIR, query_name)
+        output_dir=os.path.join(TRACKS_DIR, query_name)
     os.makedirs(output_dir, exist_ok=True)
     print(f"Track(s) will be downloaded to: {output_dir}")
 

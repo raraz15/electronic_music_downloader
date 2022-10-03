@@ -9,10 +9,10 @@ import datetime as dt
 
 import youtube_dl
 
-from info import DOWNLOAD_DIR # Default dir
+from info import TRACKS_DIR # Default dir
 
 DATE=dt.datetime.strftime(dt.datetime.now(),'%d_%m_%y')
-OUTPUT_DIR=os.path.join(DOWNLOAD_DIR,DATE)
+OUTPUT_DIR=os.path.join(TRACKS_DIR,DATE)
 
 SIMPLE_FORMAT=f"%(title)s.%(ext)s"
 YDL_OPTS={
