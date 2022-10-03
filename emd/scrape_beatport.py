@@ -33,10 +33,10 @@ def key_formatter(key):
 def sharpen_flats(root):
     roots=['C','D','E','F','G','A','B'] 
     if 'b' in root:
-        natural_harmonic=root[:1]        
+        natural_harmonic=root[:1]
         idx=roots.index(natural_harmonic)
-        sharpened_root=roots[idx-1]        
-        root="{}#".format(sharpened_root)      
+        sharpened_root=roots[idx-1]
+        root="{}#".format(sharpened_root)
     return root
 
 def replace_non_ascii(str):
@@ -72,7 +72,7 @@ def split_to_tracks(my_string):
                       'Duration(min)': track["duration"]["minutes"],
                       'BPM': track["bpm"],
                       'Key': key_formatter(track["key"]),
-                      'Label': track["label"]["name"],
+                      'Label': replace_non_ascii(track["label"]["name"]),
                       'Released': track["date"]["released"],
                       'Image Links': track["images"]["medium"]["url"],
                       'Preview': track["preview"]["mp3"]["url"]
@@ -85,6 +85,7 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--url', type=str, required=True, help='URL of the Top100 site.')
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory.')
     parser.add_argument('-N', type=int, default=10, help='Number of top entries to display.')
+    #parser.add_argument('-a','--analyze', action='store_true', help='Analyze the chart.')
     parser.add_argument('-s','--save-figure', action='store_true', help='Save the figures.')
     parser.add_argument('--preview', action='store_true', help='Download the preview mp3.')
     args=parser.parse_args()
@@ -129,6 +130,7 @@ if __name__ == '__main__':
     print("-"*(3+3+2+3+1+max_title_len+max_artist_len))
 
     # Plotting
+    #if args.analyze:
     analyze_and_plot(tracks,args.save_figure,output_dir,CHART_NAME)
     print(f"Analysis plots exported to: {output_dir}")
 
