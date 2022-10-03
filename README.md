@@ -16,7 +16,6 @@ A repository for obtaining metadata about electronic music tracks collected in S
 * [Get metadata and download the mp3 files of tracks of a Spotify Playlist with a pipeline](#get-metadata-of-a-spotify-playlist-and-download-mp3-files-from-youtube)
 * [Get metadata and download the mp3 files of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-top100-chart-and-download-mp3-files-from-youtube)
 ### TODO:
-- [ ] Path of the dummy client info (before making public)
 - [ ] Edit id3tag (update environment)
 - [ ] TraxSource crawling
 
