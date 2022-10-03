@@ -83,9 +83,7 @@ def analyze_and_plot(tracks,save_figure,output_dir,chart_name):
     if not save_figure:
         plt.draw()
         plt.show()
-
-    # If the user required further analysis
-    if save_figure:
+    else:
         fig0.savefig(os.path.join(output_dir, f"{chart_name}-Remix_Distribution.png"))
         fig1.savefig(os.path.join(output_dir, f"{chart_name}-Artist_Distribution.png"))
         fig2.savefig(os.path.join(output_dir, f"{chart_name}-Key_Distribution.png"))
