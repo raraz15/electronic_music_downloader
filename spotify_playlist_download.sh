@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# ============================ USER INPUTS ===========================================
-# Type here the playlist URI
-URI="spotify:playlist:1cSukodzZOmPh6LtRGFmn9"
-# ====================================================================================
-
 source ~/.bash_profile
 
 # Activate the conda environment
@@ -12,7 +7,7 @@ conda activate emd
 
 # Get the track information
 echo "Getting Playlist Information..."
-python emd/scrape_spotify.py -u=$URI
+python emd/scrape_spotify.py -u=$1
 
 # Find the last json file created
 playlist_path=$(find "Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)

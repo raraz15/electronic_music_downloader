@@ -4,7 +4,6 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 
 ## TODO: 
 - [ ] Path of the dummy client info (before making public)
-- [ ] Spotify Client, URI Information doc
 - [ ] Edit id3tag (update environment)
 
 ## Installation
@@ -23,14 +22,12 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 
         sudo apt-get install ffmpeg
 
-
 ### 3) Make the bash files executable
 
     Using the terminal in the current directory:
 
     chmod u+x spotify_playlist_download.sh
     chmod u+x beatport_chart_download.sh
-
 
 ### 4) Activate the environment
 
@@ -43,41 +40,28 @@ A repository for downloading electronic music from YouTube with Spotify and Beat
 
     When you have these information, paste them in spotify_client_info.json
 
+
 ## Usage
 
     After completing the installation, you can use the pipeliness or use the python scripts individually.
 
 ### A) Pipelines
 
-
 #### Get metadata, Analyze and Download mp3 files from a Beatport Top100 Chart
-
-##### 1) Get the URL of the Beatport Chart
-
-    Replace the URL in beatport_chart_download.sh where it is indicated.
-    
-##### 2) Run the bash script
 
     From the terminal,
 
-    ./beatport_chart_download.sh
-
+        ./beatport_chart_download.sh "URL of the Top100 Chart"
 
 #### Get metadata and Download mp3 files from a Spotify Playlist
-
-##### 1) Get the URI of the Spotify Playlist
 
     To get the URI, open Spotify App from your computer, go to the playlist, click on the *more options* key (three dots), come to *share* while holding the **option key** on your keyboard. 
 
     The *Copy playlist link* button will change to *Copy Spotify URI*.
 
-    Paste this URI in spotify_playlist_download.sh where it is indicated.
-
-##### 2) Run the bash script
-
     From the terminal,
 
-    ./spotify_playlist_download.sh
+        ./spotify_playlist_download.sh "URI you just copied"
 
 
 ### B) Single task python scripts

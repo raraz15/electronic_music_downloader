@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# ============================ USER INPUTS ===========================================
-# URL of the chart
-URL="https://www.beatport.com/genre/tech-house/11/top-100"
-# ====================================================================================
-
 source ~/.bash_profile
 
 # Activate the conda environment
@@ -12,7 +7,7 @@ conda activate emd
 
 # Get the track information
 echo "Getting Chart Information..."
-python emd/scrape_beatport.py -u=$URL --save-figure
+python emd/scrape_beatport.py -u=$1 --save-figure
 
 # Find the last json file created
 chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
