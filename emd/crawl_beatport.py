@@ -16,6 +16,7 @@ if __name__=="__main__":
 
     parser=argparse.ArgumentParser(description='Beatport Top100 Crawler.')
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory.')
+    parser.add_argument('--preview', action='store_true', help='Download the preview mp3.')
     args=parser.parse_args()
 
     # Find the names and links of genre pages
@@ -50,14 +51,29 @@ if __name__=="__main__":
         output_dir=args.output
     else:
         output_dir=os.path.join(CHARTS_DIR, f"Crawl-BeatportTop100-{DATE}")
-	# Create the Output Directory
     os.makedirs(output_dir, exist_ok=True)
     print(f"Exporting the charts to: {output_dir}")
 
+    # Export to json
     for genre,tracks in charts.items():
         chart_name=f"{genre}-BeatportTop100-{DATE}"
-        # Export to json
         output_path=os.path.join(output_dir,chart_name+".json")
         with open(output_path,'w', encoding='utf8') as outfile:
             json.dump(tracks, outfile, indent=4)
         print(f"Exported {len(tracks)} track information to: {output_path}\n")
+
+    # Download the preview mp3s
+    if args.preview:
+        preview_dir=os.path.join(output_dir,"Preview")
+        os.makedirs(preview_dir)
+        print(f"Preview mp3s will be stored in: {preview_dir}")
+        for genre,tracks in charts.items():
+            genre_preview_dir=os.path.join(preview_dir,genre)
+            os.makedirs(genre_preview_dir)
+            print(f"Downloading to: {genre_preview_dir}")
+            for i,track in tracks.items():
+                req=requests.get(track["Preview"])
+                with open(os.path.join(genre_preview_dir,f"{track['Title']}.mp3"),"wb") as f:
+                    f.write(req.content)
+
+    print("Done!")
