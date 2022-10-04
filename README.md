@@ -1,14 +1,15 @@
 # electronic_music_downloader
 
-A repository for obtaining metadata about electronic music tracks collected in Spotify Playlists or Beatport Top100 charts. It can make a youtube search and download medium quality mp3 files of these tracks. It can also crawl Beatport and get metadata for all electronic music genres and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks.
+A repository for obtaining metadata about electronic music tracks collected in Beatport and Traxsource Top100 charts and Spotify Playlists. It can make a Youtube search and download medium quality mp3 files of these tracks. It can also crawl Beatport and get metadata for all electronic music genres and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks.
 
 ## Table of Contents
 * [Installation](#installation)
 ### List of Functions:
 * [Get metadata from a Spotify Playlist](#spotify-scraper)
-* [Get metadata from a Beatport Top100 Chart](#beatport-scraper)
-* [Analyze and plot distributions of a Beatport Top100 Chart](#beatport-chart-analysis)
-* [Download LoFi Beatport Preview mp3 files of a Top100 Chart](#beatport-scraper)
+* [Get metadata from a Beatport Top100 Chart](#beatport-top100-chart-scraper)
+* [Get metadata from a Traxsource Top100 Chart](#traxsource-top100-chart-scraper)
+* [Analyze and plot distributions of a Top100 Chart](#beatport-chart-analysis)
+* [Download LoFi Beatport Preview mp3 files of a Top100 Chart](#beatport-top100-chart-scraper)
 * [Crawl Beatport to get metadata and Preview mp3 files of all Top100 Charts (genre-by-genre)](#beatport-crawler)
 * [Make a Youtube search to find tracks uploaded to Youtube by the Artist or Label](#youtube-searcher)
 * [Download mp3 files only if original sampling rate>44.1kHz with preferably 128kbps at 16 bits](#youtube-mp3-downloader)
@@ -18,6 +19,7 @@ A repository for obtaining metadata about electronic music tracks collected in S
 ### TODO:
 - [ ] Edit id3tag (update environment)
 - [ ] TraxSource crawling
+- [ ] TraxSource download Preview mp3
 
 ## Installation
 
@@ -86,7 +88,7 @@ Open Spotify App from your computer, go to the playlist, click on the *more opti
 ## Single Task Python Scripts
 Each of the scripts have a default directory where the outputs will be written. However, you can choose your own output directory with providing `-o` option.
 
-### Beatport Scraper
+### Beatport Top100 Chart Scraper
 ```bash
 python emd/scrape_beatport.py -u=<URL> --analyze --save-figure --preview
 ```
@@ -129,6 +131,13 @@ python emd/scrape_spotify.py -u=<URI>
 ```
 It will save the track information of the playlist with provided URI<br>
 If output_dir not provided Playlists/playlist_name
+
+### Traxsource Top100 Chart Scraper
+```bash
+python emd/scrape_traxsource.py -u=<URL> --analyze --save-figure
+```
+`--analyze`: Will perform Key, BPM, Label, Artist analysis<br>
+`--save-figure`: Will save these figures<br>
 
 ### Youtube Searcher
 ```bash
