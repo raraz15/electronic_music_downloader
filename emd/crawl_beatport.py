@@ -38,12 +38,13 @@ if __name__=="__main__":
         genre=re.sub(r"\s&\s","&",genre)
         genre=re.sub(r"\s","_",genre)
         # Get the chart information
+        print(f"\nRetrieving {genre} metadata...")
         html=requests.get(url_top100).content
         bsObj=BeautifulSoup(html, 'lxml')
         my_script=bsObj.find("script", {"id": "data-objects"})
         tracks=split_to_tracks(my_script.string)
         charts[genre]=tracks
-        print(f"\n{genre} Top Track:")
+        print(f"Top Track:")
         print(json.dumps(tracks[1],indent=4))
 
     # If user specified a directory, overwrite the default
