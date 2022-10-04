@@ -134,7 +134,7 @@ if __name__ == '__main__':
     # Download the preview mp3s
     if args.preview:
         preview_dir=os.path.join(output_dir,"Preview")
-        os.makedirs(preview_dir)
+        os.makedirs(preview_dir,exist_ok=True)
         print(f"Downloading the Preview mp3s to: {preview_dir}")
         for i,track in tracks.items():
             req=requests.get(track["Preview"])

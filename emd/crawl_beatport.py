@@ -65,11 +65,11 @@ if __name__=="__main__":
     # Download the preview mp3s
     if args.preview:
         preview_dir=os.path.join(output_dir,"Preview")
-        os.makedirs(preview_dir)
+        os.makedirs(preview_dir,exist_ok=True)
         print(f"Preview mp3s will be stored in: {preview_dir}")
         for genre,tracks in charts.items():
             genre_preview_dir=os.path.join(preview_dir,genre)
-            os.makedirs(genre_preview_dir)
+            os.makedirs(genre_preview_dir,exist_ok=True)
             print(f"Downloading to: {genre_preview_dir}")
             for i,track in tracks.items():
                 req=requests.get(track["Preview"])
