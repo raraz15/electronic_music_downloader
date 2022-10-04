@@ -11,8 +11,14 @@ from info import CHARTS_DIR # Default directory
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 
-# TODO: Rmixers
+# TODO: Utils.py maybe
+def duration_str_to_int(duration_str):
+    min,sec=duration_str.split(":")
+    duration=int(sec) + 60*int(min)
+    return duration
+
 # TODO: Analysis
+# TODO: Preview
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Beatport Top100 Analyzer')
@@ -25,7 +31,7 @@ if __name__ == '__main__':
     genre=args.url.split("/")[-2].title().replace('-','_')
     CHART_NAME=f"{genre}-TraxsourceTop100-{DATE}"
     SIMPLE_NAME=genre.replace('_',' ') # For Plotting and Printing
-    print(f"{SIMPLE_NAME} - Top 100")    
+    print(f"{SIMPLE_NAME} - Top 100")
     
     # Extract the track information
     html=requests.get(args.url).content
@@ -45,36 +51,50 @@ if __name__ == '__main__':
     tracks={}
     for idx,data_trid in enumerate(data_trids):
         track_tag=bsObj.find("div", {"data-trid": data_trid})
-        # Find the metadata
-        title,mix,duration,artists,label,r_date="","","","","",""
+        # Find the url of the track
+        url_ext=""
         for tag in track_tag.findAll("div"):
             if 'title' in tag["class"]:
-                title=tag.a.string
-                x=tag.find("span", {"class": "version"})
-                mix_duration=x.get_text()
-                duration=mix_duration.split(" ")[-1]
-                mix=mix_duration.split(" "+duration)[0]
-            elif 'artists' in tag["class"]:
-                artists=[t.string for t in tag.findAll("a", {"class": "com-artists"})]
-                artists=", ".join(artists)
-            elif 'label' in tag["class"]:
-                label=tag.a.string
-            elif 'genre' in tag["class"]:
-                genre=tag.a.string
-            elif 'r-date' in tag["class"]:
-                r_date=tag.string
-                r_date=re.sub(r"\s\s+","",r_date)
+                url_ext=tag.find("a").attrs['href']
+                break
+        # Reach the track page
+        track_html=requests.get("https://www.traxsource.com"+url_ext).content
+        track_bsObj=BeautifulSoup(track_html,'lxml')
+        # Get track information
+        image_link=track_bsObj.find("div", {"class": "tr-image"}).img['src']
+        page_head=track_bsObj.find("div", {"class": "page-head"})
+        title=page_head.find("h1", {"class": "title"}).string
+        version=page_head.find("h1", {"class": "version"}).string
+        artists=[t.string for t in page_head.findAll("a", {"class": "com-artists"})]
+        artists=", ".join(artists)
+        remixers=[t.string for t in page_head.findAll("a", {"class": "com-remixers"})]
+        remixers=", ".join(remixers)
+        matches=track_bsObj.find("div", {"class": "tr-details"}).find("table").findAll("td")
+        for m1,m2 in zip(matches[::2],matches[1::2]):
+            m1,m2=m1.string,m2.string
+            if m1=="Label:":
+                label=m2
+            elif m1=="Released:":
+                released=m2
+            elif m1=="Length:":
+                duration=m2
+            elif m1=="Genre:":
+                genre=m2
+            elif m1=="Key:":
+                key=m2
+            elif m1=="BPM:":
+                bpm=m2
         tracks[idx]={'Title': replace_non_ascii(title),
-                        'Mix': mix,
+                        'Mix': "" if version is None else version,
                         'Artist(s)': replace_non_ascii(artists),
-                        'Remixer(s)': None, # WHAT?
-                        #'Duration(sec)': track["duration"]["milliseconds"]//1000,
+                        'Remixer(s)': remixers,
+                        'Duration(sec)':duration_str_to_int(duration),
                         'Duration(min)': duration,
-                        #'BPM': track["bpm"],
-                        #'Key': key_formatter(track["key"]),
+                        'BPM': int(bpm),
+                        'Key': key.split(key[-3:])[0]+" "+key[-3:],
                         'Label': replace_non_ascii(label),
-                        'Released': r_date,
-                        #'Image Links': track["images"]["medium"]["url"],
+                        'Released': released,
+                        'Image Link': bsObj.find("div", {"class": "tr-image"}).img['src'],
                         #'Preview': track["preview"]["mp3"]["url"]
                     }
 
