@@ -21,9 +21,9 @@ YDL_OPTS={
 	}
 
 def clean_file_name(title,output_dir):
-	clean_title=re.sub("\s\s+"," ",title)      # Multiple
-	clean_title=re.sub("\A\s+","",clean_title) # Leading 
-	clean_title=re.sub("\s+\Z","",clean_title) # Trailing
+	clean_title=re.sub(r"\s\s+"," ",title)      # Multiple
+	clean_title=re.sub(r"\A\s+","",clean_title) # Leading 
+	clean_title=re.sub(r"\s+\Z","",clean_title) # Trailing
 	clean_title=re.sub(r"\s*\(Official.*\)\s*", "",clean_title) # (Official.)
 	clean_title=re.sub(r"\s*Official Audio\s*", "", clean_title) # Official.
 	clean_title=re.sub(r"\s*Official Video\s*", "", clean_title)
