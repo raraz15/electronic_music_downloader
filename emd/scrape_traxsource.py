@@ -19,7 +19,9 @@ def duration_str_to_int(duration_str):
     duration=int(sec) + 60*int(min)
     return duration
 
-def scrape_track_page(url):
+def scrape_track(url):
+    """Scrapes information for a single track from url"""
+
     # Load the track page
     track_html=requests.get(url).content
     track_bsObj=BeautifulSoup(track_html,'lxml')
@@ -63,35 +65,31 @@ if __name__ == '__main__':
     parser.add_argument('-s','--save-figure', action='store_true', help='Save the analyzed figures.')
     args=parser.parse_args()
 
+    # Navigate to the Top100 page
+    genre_url=args.url
+    if genre_url.split("/")[-1]=="top":
+        chart_url=genre_url
+    else:
+        chart_url=genre_url+"/top"
+
     # Get the Genre Name from the URL
-    genre=args.url.split("/")[-2].title().replace('-','_')
+    genre=chart_url.split("/")[-2].title().replace('-','_')
     CHART_NAME=f"{genre}-TraxsourceTop100-{DATE}"
     SIMPLE_NAME=genre.replace('_',' ') # For Plotting and Printing
     print(f"{SIMPLE_NAME} - Top 100")
     
     # Load the chart page
-    html=requests.get(args.url).content
+    html=requests.get(chart_url).content
     bsObj=BeautifulSoup(html, 'lxml')
 
-    # Find the Track IDs
-    data_trids=[m['data-trid'] for m in bsObj.findAll("div", {"data-trid":re.compile("[0-9]*")})]
-    if len(data_trids)!=100:
-        print("Something went wrong")
-        sys.exit()
+    # Find track URLs
+    track_urls=[]
+    for a in bsObj.findAll("a",{"href":re.compile(r"/track/[0-9]*")}):
+        track_urls.append(HOME_URL+a['href'])
 
     # Get the metadata of each track
     print("Retrieving the metadata...")
-    tracks={}
-    for idx,data_trid in enumerate(data_trids):
-        track_tag=bsObj.find("div", {"data-trid": data_trid})
-        # Find the url of the track
-        url_ext=""
-        for tag in track_tag.findAll("div"):
-            if 'title' in tag["class"]:
-                url_ext=tag.find("a").attrs['href']
-                break
-        track_URL=HOME_URL+url_ext
-        tracks[idx]=scrape_track_page(track_URL)
+    tracks={idx: scrape_track(track_url) for idx,track_url in enumerate(track_urls)}
 
     # If user specified a directory, overwrite the default
     if args.output!='':

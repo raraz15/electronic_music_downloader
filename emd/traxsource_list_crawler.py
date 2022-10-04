@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import argparse
 import datetime as dt
 
-from scrape_traxsource import scrape_track_page
+from scrape_traxsource import scrape_track
 from info import CRAWL_DIR
 
 HOME_URL='https://www.traxsource.com'
@@ -24,7 +24,7 @@ def crawl_single_page(url):
         url_ext=track_soup.find('div', {'class': 'trk-cell title'}).find('a').attrs['href']
         track_url=HOME_URL+url_ext
         try:
-            tracks[i]=scrape_track_page(track_url)
+            tracks[i]=scrape_track(track_url)
         except:
             print(f"{track_url} couldn't be scraped.")
             pass
