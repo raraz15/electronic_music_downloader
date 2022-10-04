@@ -11,7 +11,7 @@ from analyze_beatport import analyze_and_plot
 from info import CHARTS_DIR # Default directory
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
-PAGE_URL="https://www.traxsource.com"
+HOME_URL="https://www.traxsource.com"
 
 # TODO: Utils.py maybe
 def duration_str_to_int(duration_str):
@@ -74,11 +74,7 @@ if __name__ == '__main__':
     bsObj=BeautifulSoup(html, 'lxml')
 
     # Find the Track IDs
-    data_trids=[]
-    for tag in bsObj.find_all("div"):
-        tag_dct=dict(tag.attrs)
-        if 'data-trid' in tag_dct:
-            data_trids.append(tag_dct['data-trid'])
+    data_trids=[m['data-trid'] for m in bsObj.findAll("div", {"data-trid":re.compile("[0-9]*")})]
     if len(data_trids)!=100:
         print("Something went wrong")
         sys.exit()
@@ -94,7 +90,7 @@ if __name__ == '__main__':
             if 'title' in tag["class"]:
                 url_ext=tag.find("a").attrs['href']
                 break
-        track_URL=PAGE_URL+url_ext
+        track_URL=HOME_URL+url_ext
         tracks[idx]=scrape_track_page(track_URL)
 
     # If user specified a directory, overwrite the default
