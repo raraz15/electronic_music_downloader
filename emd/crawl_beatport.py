@@ -38,7 +38,7 @@ if __name__=="__main__":
         genre=re.sub(r"\s&\s","&",genre)
         genre=re.sub(r"\s","_",genre)
         # Get the chart information
-        print(f"\nRetrieving {genre} metadata...")
+        print(f"\nRetrieving {genre} Top100 Chart metadata...")
         html=requests.get(url_top100).content
         bsObj=BeautifulSoup(html, 'lxml')
         my_script=bsObj.find("script", {"id": "data-objects"})
