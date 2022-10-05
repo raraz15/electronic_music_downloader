@@ -11,6 +11,7 @@ A repository for obtaining metadata about electronic music tracks collected in B
 * [Analyze and plot distributions of a Top100 Chart](#beatport-chart-analysis)
 * [Download LoFi Beatport Preview mp3 files of a Top100 Chart](#beatport-top100-chart-scraper)
 * [Crawl Beatport to get metadata and Preview mp3 files of all Top100 Charts (genre-by-genre)](#beatport-crawler)
+* [Crawl Traxsource to get metadata of all Top100 Charts  (genre-by-genre) or curated lists](#traxsource-crawler)
 * [Make a Youtube search to find tracks uploaded to Youtube by the Artist or Label](#youtube-searcher)
 * [Download mp3 files only if original sampling rate>44.1kHz with preferably 128kbps at 16 bits](#youtube-mp3-downloader)
 ### Pipelines
@@ -18,8 +19,8 @@ A repository for obtaining metadata about electronic music tracks collected in B
 * [Get metadata and download the mp3 files of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-top100-chart-and-download-mp3-files-from-youtube)
 ### TODO:
 - [ ] Edit id3tag (update environment)
-- [ ] TraxSource crawling
 - [ ] TraxSource download Preview mp3
+- [ ] Package structure for each website
 
 ## Installation
 
@@ -138,6 +139,11 @@ python emd/scrape_traxsource.py -u=<URL> --analyze --save-figure
 ```
 `--analyze`: Will perform Key, BPM, Label, Artist analysis<br>
 `--save-figure`: Will save these figures<br>
+
+### Traxsource Crawler
+```bash
+python emd/crawl_traxsource.py
+```
 
 ### Youtube Searcher
 ```bash
