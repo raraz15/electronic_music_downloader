@@ -30,8 +30,8 @@ def replace_non_ascii(str):
     str=str.decode("utf-8") # For json dump
     return str
 
-def make_name(name_dict_list):
-    name=", ".join([artist["name"] for artist in name_dict_list])
+def make_name(name_list):
+    name=", ".join(name_list)
     name=replace_non_ascii(name)
     return name
 

@@ -28,8 +28,8 @@ def split_to_tracks(my_string):
         track=json.loads(track_str) # Convert the track soup to dict
         track_dicts[i]={'Title': replace_non_ascii(track["release"]["name"]),
                       'Mix': track["mix"],
-                      'Artist(s)': make_name(track["artists"]),
-                      'Remixer(s)': make_name(track["remixers"]),
+                      'Artist(s)': make_name([x["name"] for x in track["artists"]]),
+                      'Remixer(s)': make_name([x["name"] for x in track["remixers"]]),
                       'Duration(sec)': track["duration"]["milliseconds"]//1000,
                       'Duration(min)': track["duration"]["minutes"],
                       'BPM': track["bpm"],

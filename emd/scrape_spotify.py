@@ -53,7 +53,7 @@ if __name__ == "__main__":
         for j,item in enumerate(playlist_dct['items']):
             track=item['track']
             track_dicts[i*100+j]={'Title': replace_non_ascii(track['name']),
-                                'Artist(s)': make_name(track['artists']),
+                                'Artist(s)': make_name([x["name"] for x in track["artists"]]),
                                 'Album Name': track['album']['name'],
                                 'Album Type': track['album']['type'],
                                 'Duration(sec)': track['duration_ms']//1000,
