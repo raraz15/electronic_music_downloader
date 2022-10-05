@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from scrape_traxsource import scrape_track
+from utilities import format_genre_string
 from info import CRAWL_DIR
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
@@ -51,9 +52,7 @@ if __name__=="__main__":
             print(f"Top Track:")
             print(json.dumps(tracks[1],indent=4))
             # Export because slow scraping
-            genre=re.sub(r"\s/\s","-",genre)
-            genre=re.sub(r"\s&\s","&",genre)
-            genre=re.sub(r"\s","_",genre)
+            genre=format_genre_string(genre)
             chart_name=f"{genre}-TraxsourceTop100-{DATE}"
             output_path=os.path.join(output_dir,chart_name+".json")
             with open(output_path,'w', encoding='utf8') as outfile:

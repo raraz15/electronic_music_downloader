@@ -19,6 +19,7 @@ def form_query(track_dict):
         query=f"{title} - {artist}"
     return query
 
+# Keep this function separet because youtube can have hour long videos
 def duration_str_to_int(duration_str):
     s=duration_str[-2:]
     m=duration_str[-5:-3]

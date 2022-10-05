@@ -1,4 +1,4 @@
-import os,sys
+import os
 import re
 import json
 import datetime as dt
@@ -6,23 +6,13 @@ import requests
 import argparse
 from bs4 import BeautifulSoup
 
-from scrape_beatport import replace_non_ascii
 from analyze_beatport import analyze_and_plot
+from utilities import duration_str_to_int,make_name,replace_non_ascii,format_key
 from info import CHARTS_DIR # Default directory
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 HOME_URL="https://www.traxsource.com"
 
-# TODO: Utils.py maybe
-def duration_str_to_int(duration_str):
-    min,sec=duration_str.split(":")
-    duration=int(sec)+60*int(min)
-    return duration
-
-def format_key(key):
-    min_maj=key[-3:]
-    natural_harmonic=key.split(min_maj)[0]
-    return natural_harmonic+" "+min_maj
 
 def scrape_track(url):
     """Scrapes information for a single track from url"""
@@ -31,21 +21,19 @@ def scrape_track(url):
     html=requests.get(url).content
     bsObj=BeautifulSoup(html,'lxml')
     # Scrape the data
-    artists_list=bsObj.findAll("a", {"class": {"com-artists"}})
-    remixers_list=bsObj.findAll("a", {"class": {"com-remixers"}})
+    artists_list=[x.string for x in bsObj.findAll("a", {"class": {"com-artists"}})]
+    remixers_list=[x.string for x in bsObj.findAll("a", {"class": {"com-remixers"}})]
     title=bsObj.find("h1", {"class": "title"}).string
     version=bsObj.find("h1", {"class": "version"}).string
     image_link=bsObj.find("div", {"class": "tr-image"}).find("img")['src']
-    artists=", ".join([t.string for t in artists_list])
-    remixers=", ".join([t.string for t in remixers_list])
     # Odd elements of the table have the data
     matches=bsObj.find("div", {"class": "tr-details"}).find("table").findAll("td")
     label,released,duration,genre,key,bpm=[r.string for r in matches[1::2]]
     # Combine
     track={'Title': replace_non_ascii(title),
             'Mix': "" if version is None else version,
-            'Artist(s)': replace_non_ascii(artists),
-            'Remixer(s)': replace_non_ascii(remixers),
+            'Artist(s)': make_name(artists_list),
+            'Remixer(s)': make_name(remixers_list),
             'Duration(sec)':duration_str_to_int(duration),
             'Duration(min)': duration,
             'BPM': int(bpm) if bpm is not None else 0,

@@ -7,6 +7,7 @@ import datetime as dt
 from bs4 import BeautifulSoup
 
 from scrape_beatport import split_to_tracks
+from utilities import format_genre_string
 from info import CRAWL_DIR
 
 URL="https://www.beatport.com"
@@ -25,8 +26,8 @@ if __name__=="__main__":
     matches=bsObj.find_all("a",{"class": "genre-drop-list__genre"})
     genre_dict={m["data-name"]: f"{URL}/{m['href']}" for m in matches}
     print(f"{len(genre_dict)} genre links returned.")
-    print("Finding the Top100 Links...")
     # Find the Top100 links of each genre and scrape its track information
+    print("Finding the Top100 Links...")
     charts={}
     for genre,url in genre_dict.items():
         # Find the top100 page url
@@ -34,9 +35,7 @@ if __name__=="__main__":
         bsObj=BeautifulSoup(html, 'lxml')
         url_top100=f"{url}/top-100"
         # Modify name
-        genre=re.sub(r"\s/\s","-",genre)
-        genre=re.sub(r"\s&\s","&",genre)
-        genre=re.sub(r"\s","_",genre)
+        genre=format_genre_string(genre)
         # Get the chart information
         print(f"\nRetrieving {genre} Top100 Chart metadata...")
         html=requests.get(url_top100).content

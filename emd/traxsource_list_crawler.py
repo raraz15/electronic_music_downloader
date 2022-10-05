@@ -18,7 +18,7 @@ def crawl_single_page(url):
     # Load the page
     html=requests.get(url).content
     bsObj=BeautifulSoup(html, 'lxml')
-    # Scrape Each trakck in the page
+    # Scrape each track in the page
     tracks={}
     for i,track_soup in enumerate(bsObj.findAll("div", {"data-trid":re.compile("[0-9]*")})):
         url_ext=track_soup.find('div', {'class': 'trk-cell title'}).find('a').attrs['href']

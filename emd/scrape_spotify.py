@@ -1,25 +1,15 @@
 import os
-import unicodedata
 import requests
 import argparse
 import datetime as dt
 import json
 
+from utilities import replace_non_ascii,make_name
 from info import CLIENT_INFO_PATH # Path to json file containing spotify client
 from info import PLAYLIST_DIR # Default download directory
 
 AUTH_URL='https://accounts.spotify.com/api/token'
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%y")
-
-def replace_non_ascii(str):
-    str=unicodedata.normalize('NFKD', str).encode('ascii', 'ignore')
-    str=str.decode("utf-8") # For json dump
-    return str
-
-def make_name(name_dict_list):
-    name=", ".join([artist["name"] for artist in name_dict_list])
-    name=replace_non_ascii(name)
-    return name    
 
 if __name__ == "__main__":
 
