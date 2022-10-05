@@ -20,6 +20,7 @@ def form_query(track_dict):
         query=f"{title} - {artist}"
     return query
 
+# TODO: get query from customSearch
 def get_best_link_for_track(customSearch, query, artist_label, track_dur):
     artist,label=artist_label
     artist,label=artist.lower(),str(label).lower() # Convert to str incase if its None
