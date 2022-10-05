@@ -35,10 +35,17 @@ def make_name(name_dict_list):
     name=replace_non_ascii(name)
     return name
 
-# TODO: Utils.py maybe
 def duration_str_to_int(duration_str):
-    min,sec=duration_str.split(":")
-    duration=int(sec)+60*int(min)
+    parts=duration_str.split(":")
+    if len(parts)==1:
+        sec=parts[0]
+        duration=duration
+    elif len(parts)==2:
+        min,sec=parts
+        duration=int(sec)+60*int(min)
+    else:
+        h,min,sec=parts
+        duration=3600*int(h)+int(sec)+60*int(min)
     return duration
 
 def format_key(key):

@@ -7,6 +7,7 @@ import json
 
 from youtubesearchpython import VideosSearch
 
+from utilities import duration_str_to_int
 from info import QUERY_DIR # Default download directories
 
 def form_query(track_dict):
@@ -18,16 +19,6 @@ def form_query(track_dict):
     else:
         query=f"{title} - {artist}"
     return query
-
-# Keep this function separet because youtube can have hour long videos
-def duration_str_to_int(duration_str):
-    s=duration_str[-2:]
-    m=duration_str[-5:-3]
-    duration=int(s) + 60*int(m)
-    if len(duration_str.split(':'))>2:
-        h=int(duration_str[:duration_str.index(':')])
-        duration += 3600*h
-    return duration
 
 def get_best_link_for_track(customSearch, query, artist_label, track_dur):
     artist,label=artist_label
@@ -118,7 +109,7 @@ def find_link_single_track(track_dict, N, idx=None):
 
 if __name__ == '__main__':
 
-    parser=argparse.ArgumentParser(description='Youtube Crawler for Electronic Music')
+    parser=argparse.ArgumentParser(description='Youtube Searcher for Electronic Music')
     parser.add_argument('-p', '--path', type=str, required=True, help='Path to the chart_dict.json file.')
     parser.add_argument('-N', type=int, default=5, help='Number of top entries to search for each query.')
     parser.add_argument('-o', '--output', type=str, default=QUERY_DIR, help='Specify an output directory.')
