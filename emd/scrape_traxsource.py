@@ -16,37 +16,40 @@ HOME_URL="https://www.traxsource.com"
 # TODO: Utils.py maybe
 def duration_str_to_int(duration_str):
     min,sec=duration_str.split(":")
-    duration=int(sec) + 60*int(min)
+    duration=int(sec)+60*int(min)
     return duration
+
+def format_key(key):
+    min_maj=key[-3:]
+    natural_harmonic=key.split(min_maj)[0]
+    return natural_harmonic+" "+min_maj
 
 def scrape_track(url):
     """Scrapes information for a single track from url"""
 
     # Load the track page
-    track_html=requests.get(url).content
-    track_bsObj=BeautifulSoup(track_html,'lxml')
-    image_link=track_bsObj.find("div", {"class": "tr-image"}).find("img")['src']
-    # Header
-    page_head=track_bsObj.find("div", {"class": "page-head"})
-    title=page_head.find("h1", {"class": "title"}).string
-    version=page_head.find("h1", {"class": "version"}).string
-    artists=[t.string for t in page_head.findAll("a", {"class": "com-artists"})]
-    artists=", ".join(artists)
-    remixers=[t.string for t in page_head.findAll("a", {"class": "com-remixers"})]
-    remixers=", ".join(remixers)
-    # Table
-    matches=track_bsObj.find("div", {"class": "tr-details"}).find("table").findAll("td")
-    # The odd elements have the data
+    html=requests.get(url).content
+    bsObj=BeautifulSoup(html,'lxml')
+    # Scrape the data
+    artists_list=bsObj.findAll("a", {"class": {"com-artists"}})
+    remixers_list=bsObj.findAll("a", {"class": {"com-remixers"}})
+    title=bsObj.find("h1", {"class": "title"}).string
+    version=bsObj.find("h1", {"class": "version"}).string
+    image_link=bsObj.find("div", {"class": "tr-image"}).find("img")['src']
+    artists=", ".join([t.string for t in artists_list])
+    remixers=", ".join([t.string for t in remixers_list])
+    # Odd elements of the table have the data
+    matches=bsObj.find("div", {"class": "tr-details"}).find("table").findAll("td")
     label,released,duration,genre,key,bpm=[r.string for r in matches[1::2]]
     # Combine
     track={'Title': replace_non_ascii(title),
             'Mix': "" if version is None else version,
             'Artist(s)': replace_non_ascii(artists),
-            'Remixer(s)': remixers,
+            'Remixer(s)': replace_non_ascii(remixers),
             'Duration(sec)':duration_str_to_int(duration),
             'Duration(min)': duration,
-            'BPM': int(bpm),
-            'Key': key.split(key[-3:])[0]+" "+key[-3:],
+            'BPM': int(bpm) if bpm is not None else 0,
+            'Key': format_key(key) if key is not None else "",
             'Label': replace_non_ascii(label),
             'Released': released,
             'Image Link': image_link,
@@ -54,7 +57,7 @@ def scrape_track(url):
             }
     return track
 
-# TODO: Preview
+# TODO: Get the Preview mp3
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Traxsource Top100 Analyzer')
@@ -89,7 +92,7 @@ if __name__ == '__main__':
 
     # Get the metadata of each track
     print("Retrieving the metadata...")
-    tracks={idx: scrape_track(track_url) for idx,track_url in enumerate(track_urls)}
+    tracks={idx+1: scrape_track(track_url) for idx,track_url in enumerate(track_urls)}
 
     # If user specified a directory, overwrite the default
     if args.output!='':
