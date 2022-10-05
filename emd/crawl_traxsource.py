@@ -12,6 +12,7 @@ from info import CRAWL_DIR
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 HOME_URL="https://www.traxsource.com"
+NON_GENRES=["Sounds, Samples & Loops","DJ Tools","Acapella","Beats","Efx"]
 
 if __name__=="__main__":
 
@@ -38,6 +39,8 @@ if __name__=="__main__":
             genre=flt.text
             genre_url_ext=flt["href"]
             chart_url=HOME_URL+genre_url_ext+"/top"
+            if genre in NON_GENRES: # Some of them are not genres
+                continue
             # Load the Top100 Chart page
             genre_html=requests.get(chart_url).content
             genre_bsObj=BeautifulSoup(genre_html,'lxml')
