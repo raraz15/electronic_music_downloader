@@ -13,7 +13,6 @@ from info import CHARTS_DIR # Default directory
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 HOME_URL="https://www.traxsource.com"
 
-
 def scrape_track(url):
     """Scrapes information for a single track from url"""
 
