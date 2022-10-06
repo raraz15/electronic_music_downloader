@@ -21,6 +21,7 @@ A repository for obtaining metadata about electronic music tracks collected in B
 - [ ] Edit id3tag (update environment)
 - [ ] TraxSource download Preview mp3
 - [ ] Package structure for each website
+- [ ] Put beatport url of each track
 
 ## Installation
 
