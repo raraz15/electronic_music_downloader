@@ -39,7 +39,8 @@ def scrape_track(url):
             'Key': format_key(key) if key is not None else "",
             'Label': replace_non_ascii(label),
             'Released': released,
-            'Image Link': image_link,
+            'Track URL': url,
+            'Image URL': image_link,
             #'Preview': track["preview"]["mp3"]["url"]
             }
     return track
