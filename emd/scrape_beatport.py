@@ -36,7 +36,8 @@ def split_to_tracks(my_string):
                       'Key': key_formatter(track["key"]),
                       'Label': replace_non_ascii(track["label"]["name"]),
                       'Released': track["date"]["released"],
-                      'Image Link': track["images"]["medium"]["url"],
+                      #'Track URL': url,
+                      'Image URL': track["images"]["medium"]["url"],
                       'Preview': track["preview"]["mp3"]["url"]
                     }
     return track_dicts
