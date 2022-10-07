@@ -5,6 +5,7 @@ import argparse
 import datetime as dt
 
 import youtube_dl
+from mutagen.id3 import ID3, TPE1, TIT2
 
 from info import TRACKS_DIR # Default dir
 
@@ -51,7 +52,15 @@ def flatten_playlist(url):
 			urls=[url] # Single track
 	return urls
 
-def download_single_track(url,output_dir,clean=False):
+def set_id3_tag(audio_path,id3_tag):
+	print("Setting the id3 tag...")
+	artist,title=id3_tag
+	audio=ID3(audio_path)
+	audio['TPE1']=TPE1(encoding=3,text=artist)
+	audio['TIT2']=TIT2(encoding=3,text=title)
+	audio.save(v2_version=3)
+
+def download_single_track(url,output_dir,clean=False,id3_tag=None):
 	attempt=False
 	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 		# Get information to determine name formatting
@@ -68,12 +77,16 @@ def download_single_track(url,output_dir,clean=False):
 				form="%(artist)s - %(track)s.%(ext)s"
 				YDL_OPTS['outtmpl']=f"{output_dir}/{form}"
 				title=f"{artist} - {track}"
+				id3_tag=(artist,track)
 			else: # Attempt download with the current format
 				attempt=True
 				title=info_dict.get('title', None)
 				try:
 					ydl.download([url])
-					if clean:
+					if id3_tag is not None: # Set the id3tag if provided
+						mp3_path=os.path.join(output_dir,f"{title}.mp3")
+						set_id3_tag(mp3_path,id3_tag)
+					if clean: # Clean the file name
 						clean_file_name(title,output_dir)
 				except Exception:
 					print(f"There was an error on: {url}")
@@ -83,15 +96,16 @@ def download_single_track(url,output_dir,clean=False):
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			try:
 				ydl.download([url])
-				if clean:
+				if id3_tag is not None: # Set the id3tag if provided
+					mp3_path=os.path.join(output_dir,f"{title}.mp3")
+					set_id3_tag(mp3_path,id3_tag)
+				if clean: # Clean the file name
 					clean_file_name(title,output_dir)
 			except Exception:
 				print(f"There was an error on: {url}")
 
 def main(url,output_dir,verbose=True,clean=False):
-	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
-	If its a playlist, first flattens the list.
-	"""
+	"""Downloads the youtube mp3/mp3s to output_dir with metadata, id3 tag formatting."""
 
 	# Initialize the output format
 	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
@@ -109,7 +123,6 @@ def main(url,output_dir,verbose=True,clean=False):
 
 # TODO: change the name to download_mp3
 # TODO: faster flattening
-# TODO: edit id3tag
 if __name__ == '__main__':
 
 	parser=argparse.ArgumentParser(description='Youtube mp3 downloader.')
