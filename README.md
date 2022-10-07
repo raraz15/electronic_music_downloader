@@ -18,11 +18,12 @@ A repository for obtaining metadata about electronic music tracks collected in B
 * [Get metadata and download the mp3 files of tracks of a Spotify Playlist with a pipeline](#get-metadata-of-a-spotify-playlist-and-download-mp3-files-from-youtube)
 * [Get metadata and download the mp3 files of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-top100-chart-and-download-mp3-files-from-youtube)
 ### TODO:
-- [ ] Edit id3tag, artwork (update environment)
+- [ ] URL with _ or not?
 - [ ] Package structure for each website
 - [ ] TraxSource download Preview mp3
 - [ ] Put beatport url of each track
 - [ ] Discogs scrape (Later)
+- [ ] Id3tag: Mix type, remixers, artwork (Later)
 
 ## Installation
 

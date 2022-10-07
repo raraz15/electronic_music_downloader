@@ -5,6 +5,7 @@ import argparse
 import datetime as dt
 
 import youtube_dl
+from mutagen.id3 import ID3, TPE1, TIT2
 
 from info import TRACKS_DIR # Default dir
 
@@ -17,7 +18,6 @@ YDL_OPTS={
 		'postprocessors': [{'key': 'FFmpegExtractAudio',
 							'preferredcodec': 'mp3',
 							}],
-		# 'preferredquality': '320' upsamples, not real 320kbps
 	}
 
 def clean_file_name(title,output_dir):
@@ -38,37 +38,38 @@ def clean_file_name(title,output_dir):
 		print(f"Changing {title} to: {clean_title}")
 		shutil.move(f"{output_dir}/{title}.mp3",f"{output_dir}/{clean_title}.mp3")
 
-def main(URL,output_dir,verbose=True,clean=False):
-	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
-	If its a playlist, first flattens the list.
-	"""
-
-	# Initialize the output format
-	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
-
-	# Flatten the links if its a playlist
-	links=[]
-	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl: # Get all the individual links
-		result=ydl.extract_info(URL, download=False)
+def flatten_playlist(url):
+	"""If the url is of a playlist, it flattens it."""
+	urls=[]
+	print("\nChecking if playlist or single track...")
+	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl: # Get all the individual urls
+		result=ydl.extract_info(url, download=False)
 		if 'entries' in result: # Playlist
 			for i,_ in enumerate(result['entries']):
-				links.append(result['entries'][i]['webpage_url'])
+				urls.append(result['entries'][i]['webpage_url'])
 			print("Flattened the playlist.")
 		else:
-			links=[URL] # Single track
-	if verbose:
-		print("Starting to download...\n")
+			urls=[url] # Single track
+	return urls
 
-	for i,link in enumerate(links):
-		if verbose:
-			print(f"{i+1}/{len(links)}")
-		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
-			# Get information to determine name formatting
-			info_dict=ydl.extract_info(link, download=False)
-			# Check the audio sampling rate
-			if int(info_dict.get('asr', None))<44100:
-				print("Low sampling rate! Skipping.")
-				continue
+def set_id3_tag(audio_path,id3_tag):
+	artist,title=id3_tag
+	audio=ID3(audio_path)
+	audio['TPE1']=TPE1(encoding=3,text=artist)
+	audio['TIT2']=TIT2(encoding=3,text=title)
+	audio.save(v2_version=3)
+
+def download_single_track(url,output_dir,clean=False,id3_tag=None):
+	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}" # Initialize the output format
+	attempt=False
+	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
+		# Get information to determine name formatting
+		info_dict=ydl.extract_info(url,download=False)
+		# Check the audio sampling rate
+		if int(info_dict.get('asr', None))<44100:
+			attempt=True
+			print("Low sampling rate! Skipping.")
+		else:
 			artist=info_dict.get('artist',None)
 			track=info_dict.get('track',None)
 			# Change the formatting if artist and track name is specified
@@ -76,31 +77,37 @@ def main(URL,output_dir,verbose=True,clean=False):
 				form="%(artist)s - %(track)s.%(ext)s"
 				YDL_OPTS['outtmpl']=f"{output_dir}/{form}"
 				title=f"{artist} - {track}"
+				id3_tag=(artist,track)
 			else: # Attempt download with the current format
+				attempt=True
 				title=info_dict.get('title', None)
 				try:
-					ydl.download([link])
-					if clean:
+					ydl.download([url])
+					if id3_tag is not None: # Set the id3tag if provided
+						mp3_path=os.path.join(output_dir,f"{title}.mp3")
+						set_id3_tag(mp3_path,id3_tag)
+					if clean: # Clean the file name
 						clean_file_name(title,output_dir)
 				except Exception:
-					print(f"There was an error on: {link}")
+					print(f"There was an error on: {url}")
 				print("")
-				continue
+	if not attempt:
 		# Set the new format and Download
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			try:
-				ydl.download([link])
-				if clean:
+				ydl.download([url])
+				if id3_tag is not None: # Set the id3tag if provided
+					mp3_path=os.path.join(output_dir,f"{title}.mp3")
+					set_id3_tag(mp3_path,id3_tag)
+				if clean: # Clean the file name
 					clean_file_name(title,output_dir)
 			except Exception:
-				print(f"There was an error on: {link}")
-		# Go back to the default format
-		YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
-		print("")
+				print(f"There was an error on: {url}")
+	# Go back to the default format for loops
+	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
 
 # TODO: change the name to download_mp3
 # TODO: faster flattening
-# TODO: edit id3tag
 if __name__ == '__main__':
 
 	parser=argparse.ArgumentParser(description='Youtube mp3 downloader.')
@@ -113,5 +120,10 @@ if __name__ == '__main__':
 	os.makedirs(args.output, exist_ok=True)
 	print(f"Track(s) will be downloaded to: {args.output}")
 
+	urls=flatten_playlist(args.url) # Flatten the urls if its a playlist
 	# Download
-	main(args.url,args.output,clean=args.clean)
+	print("Starting to download...\n")
+	for i,url in enumerate(urls):
+		print(f"{i+1}/{len(urls)}")
+		download_single_track(url,args.output,args.clean)
+		print("")
