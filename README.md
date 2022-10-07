@@ -170,7 +170,7 @@ python/youtube/download_queries.py -p=<queries_json_path> --clean
 `--clean`: after a track is downloaded its name will be cleaned and formatted<br>
 
 ### Chart Analysis
-Can analyze the Top100 Charts of Beatport and Traxsource. You need to scrape the chart first with [Beatport](#beatport-top100-chart-scraper) or(#beatport-top100-chart-scraper), [Traxsource](#traxsource-top100-chart-scraper)<br>
+Can analyze the Top100 Charts of Beatport and Traxsource. You need to scrape the chart first with [Beatport](#beatport-top100-chart-scraper) or, [Traxsource](#traxsource-top100-chart-scraper)<br>
 Perform Key, BPM, Label, Artist analysis and plot their distributions
 ```bash
 python emd/analyze_chart.py -p=<chart_json_path> --save-figure
