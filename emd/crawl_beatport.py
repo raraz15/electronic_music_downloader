@@ -1,6 +1,5 @@
 import os
 import json
-import re
 import requests
 import argparse
 import datetime as dt
