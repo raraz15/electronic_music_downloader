@@ -1,11 +1,15 @@
-import os
+import os,sys
 import json
 import datetime as dt
 import requests
 import argparse
 from bs4 import BeautifulSoup
 
-from analyze_beatport import analyze_and_plot
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
+
+from analyze_chart import analyze_and_plot
 from utilities import replace_non_ascii,make_name,key_formatter
 from info import CHARTS_DIR # Default directory
 

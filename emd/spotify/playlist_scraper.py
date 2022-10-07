@@ -1,8 +1,13 @@
 import os
+import sys
 import requests
 import argparse
 import datetime as dt
 import json
+
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
 
 from utilities import replace_non_ascii,make_name
 from info import CLIENT_INFO_PATH # Path to json file containing spotify client

@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import json
 import requests
@@ -6,7 +7,11 @@ from bs4 import BeautifulSoup
 import argparse
 import datetime as dt
 
-from scrape_traxsource import scrape_track
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
+
+from chart_scraper import scrape_track
 from info import CRAWL_DIR
 
 HOME_URL='https://www.traxsource.com'

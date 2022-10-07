@@ -5,6 +5,10 @@ import traceback
 import re
 import json
 
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
+
 from youtubesearchpython import VideosSearch
 
 from utilities import duration_str_to_int

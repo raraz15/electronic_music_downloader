@@ -1,10 +1,14 @@
-import os,sys
+import os
+import sys
 import json
 import re
 import argparse
 
-from mp3_downloader import download_single_track
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
 
+from mp3_downloader import download_single_track
 from info import TRACKS_DIR, QUERY_DIR # Default directories
 
 if __name__ == '__main__':
