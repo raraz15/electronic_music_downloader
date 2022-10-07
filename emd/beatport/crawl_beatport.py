@@ -1,9 +1,13 @@
-import os
+import os,sys
 import json
 import requests
 import argparse
 import datetime as dt
 from bs4 import BeautifulSoup
+
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
 
 from scrape_beatport import split_to_tracks
 from utilities import format_genre_string
@@ -24,11 +28,11 @@ if __name__=="__main__":
     bsObj=BeautifulSoup(html, 'lxml')
     matches=bsObj.find_all("a",{"class": "genre-drop-list__genre"})
     genre_dict={m["data-name"]: f"{URL}/{m['href']}" for m in matches}
-    print(f"{len(genre_dict)} genre links returned.")
+    print(f"{len(genre_dict)} Genre URLs returned.")
     # Find the Top100 links of each genre and scrape its track information
-    print("Finding the Top100 Links...")
     charts={}
     for genre,url in genre_dict.items():
+        print(f"\nRetrieving {genre} Top100 Chart metadata...")
         # Find the top100 page url
         html=requests.get(url).content
         bsObj=BeautifulSoup(html, 'lxml')
@@ -36,7 +40,6 @@ if __name__=="__main__":
         # Modify name
         genre=format_genre_string(genre)
         # Get the chart information
-        print(f"\nRetrieving {genre} Top100 Chart metadata...")
         html=requests.get(url_top100).content
         bsObj=BeautifulSoup(html, 'lxml')
         my_script=bsObj.find("script", {"id": "data-objects"})
