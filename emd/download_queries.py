@@ -3,7 +3,7 @@ import json
 import re
 import argparse
 
-from mp3_downloader import main
+from mp3_downloader import download_single_track
 
 from info import TRACKS_DIR, QUERY_DIR # Default directories
 
@@ -12,7 +12,7 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser(description='Youtube mp3 downloader from queries.json.')
     parser.add_argument('-p', '--path', type=str, required=True, help='Path to the queries.json file.')
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory name.')
-    parser.add_argument('-c', '--clean', action="store_true", help="If clean the names of the files after download.")
+    parser.add_argument('-c', '--clean', action="store_true", help="Clean the names of the files after download.")
     args=parser.parse_args()
 
     # Load the Query Dict
@@ -36,7 +36,11 @@ if __name__ == '__main__':
     for i, query_dict in enumerate(queries_dict.values()):
         print(f"{i+1}/{len(queries_dict)}")
         try:
-            main(query_dict['Youtube_URL'], output_dir, verbose=False, clean=args.clean)
+            download_single_track(query_dict['Youtube_URL'],
+                                output_dir,
+                                clean=args.clean,
+                                id3_tag=(query_dict["Artist(s)"],query_dict["Title"])
+                                )
         except KeyboardInterrupt:
             sys.exit()
         except Exception as ex: 
