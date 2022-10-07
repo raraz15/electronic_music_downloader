@@ -7,7 +7,7 @@ conda activate emd
 
 # Get the track information
 echo "Getting Playlist Information..."
-python emd/spotify/scrape_spotify.py -u=$1
+python emd/spotify/playlist_scraper.py -u=$1
 
 # Find the last json file created
 playlist_path=$(find "Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)

@@ -10,7 +10,7 @@ PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
 LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
 sys.path.append(LIBRARY_PATH)
 
-from scrape_beatport import split_to_tracks
+from chart_scraper import split_to_tracks
 from utilities import format_genre_string
 from info import CRAWL_DIR
 

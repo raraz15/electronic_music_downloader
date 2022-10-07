@@ -5,13 +5,13 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 ## Table of Contents
 * [Installation](#installation)
 ### List of Functions:
-* [Get metadata from a Spotify Playlist](#spotify-scraper)
+* [Get metadata from a Spotify Playlist](#spotify-playlist-scraper)
 * [Get metadata from a Beatport Top100 Chart](#beatport-top100-chart-scraper)
 * [Get metadata from a Traxsource Top100 Chart](#traxsource-top100-chart-scraper)
-* [Analyze and plot distributions of a Top100 Chart](#beatport-chart-analysis)
+* [Analyze and plot distributions of a Top100 Chart](#chart-analysis)
 * [Download LoFi Beatport Preview mp3 files of a Top100 Chart](#beatport-top100-chart-scraper)
-* [Crawl Beatport to get metadata and Preview mp3 files of all Top100 Charts (genre-by-genre)](#beatport-crawler)
-* [Crawl Traxsource to get metadata of all Top100 Charts  (genre-by-genre) or curated lists](#traxsource-crawler)
+* [Crawl Beatport to get metadata and Preview mp3 files of all Top100 Charts (genre-by-genre)](#beatport-genre-crawler)
+* [Crawl Traxsource to get metadata of all Top100 Charts  (genre-by-genre) or curated lists](#traxsource-genre-crawler)
 * [Make a Youtube search to find tracks uploaded to Youtube by the Artist or Label](#youtube-searcher)
 * [Download mp3 files only if original sampling rate>44.1kHz with preferably 128kbps at 16 bits](#youtube-mp3-downloader)
 ### Pipelines
@@ -20,9 +20,8 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 * [Get metadata and download the mp3 files of tracks of a Traxsource Top100 Chart with a pipeline](#get-metadata-of-a-beatport-or-traxsource-top100-chart-and-download-mp3-files-from-youtube)
 ### TODO:
 - [ ] URL with _ or not?
-- [ ] Package structure for each website
-- [ ] TraxSource download Preview mp3
 - [ ] Put beatport url of each track
+- [ ] TraxSource download Preview mp3
 - [ ] Discogs scrape (Later)
 - [ ] Id3tag: Mix type, remixers, artwork (Later)
 
@@ -99,7 +98,7 @@ Each of the scripts have a default directory where the outputs will be written. 
 
 ### Beatport Top100 Chart Scraper
 ```bash
-python emd/beatport/scrape_beatport.py -u=<URL> --analyze --save-figure --preview
+python emd/beatport/chart_scraper.py -u=<URL> --analyze --save-figure --preview
 ```
 `--analyze`: Will perform Key, BPM, Label, Artist analysis<br>
 `--save-figure`: Will save these figures<br>
@@ -122,36 +121,32 @@ Example of a track metadata:
 }
 ```
 
-### Chart Analysis
-Can analyze the Top100 Charts of Beatport and Traxsource. You need to scrape the chart first with [Beatport] or(#beatport-top100-chart-scraper), [Traxsource](#traxsource-top100-chart-scraper)
+### Beatport Genre Crawler
+Will crawl Beatport and scrape each Genre's Top100 chart.
 ```bash
-python emd/analyze_chart.py -p=<chart_json_path> --save-figure
-```
-Perform Key, BPM, Label, Artist analysis and plot their distributions
-
-### Beatport Crawler
-```bash
-python emd/beatport/crawl_beatport.py --preview
+python emd/beatport/genre_crawler.py --preview
 ```
 `--preview`: Will download the LoFi Preview mp3 of the tracks
 
-### Spotify Scraper
-```bash
-python emd/spotify/scrape_spotify.py -u=<URI>
-```
+### Spotify Playlist Scraper
 It will save the track information of the playlist with provided URI<br>
-If output_dir not provided Playlists/playlist_name
+If output_dir not provided, to Playlists/playlist_name
+```bash
+python emd/spotify/playlist_scraper.py -u=<URI>
+```
 
 ### Traxsource Top100 Chart Scraper
+Scrapes metadata.
 ```bash
-python emd/traxsource/scrape_traxsource.py -u=<URL> --analyze --save-figure
+python emd/traxsource/chart_scraper.py -u=<URL> --analyze --save-figure
 ```
 `--analyze`: Will perform Key, BPM, Label, Artist analysis<br>
 `--save-figure`: Will save these figures<br>
 
-### Traxsource Crawler
+### Traxsource Genre Crawler
+Will crawl Traxsource and scrape each Genre's Top100 chart.
 ```bash
-python emd/traxsource/crawl_traxsource.py
+python emd/traxsource/genre_crawler.py
 ```
 
 ### Youtube Searcher
@@ -161,16 +156,22 @@ python/youtube/youtube_searcher.py -p=<chart_or_playlist_json_path> -N=5
 `-N`: determines the depth of the youtube search for a query
 
 ### Youtube mp3 Downloader
+It will try to download the best possible bit rate, which is 128 kbps for Youtube.
 ```bash
 python emd/youtube/mp3_downloader.py -u=<track_or_playlist_youtube_URL> --clean
 ```
 `--clean`: after a track is downloaded its name will be cleaned and formatted<br>
-<br>
-It will try to download the best possible bit rate, which is 128 kbps for Youtube.<br>
 
 ### Chart and Playlist Downloader
+Downloads all the tracks in the query.json file
 ```bash
 python/youtube/download_queries.py -p=<queries_json_path> --clean
 ```
-Downloads all the tracks in the query.json file<br>
 `--clean`: after a track is downloaded its name will be cleaned and formatted<br>
+
+### Chart Analysis
+Can analyze the Top100 Charts of Beatport and Traxsource. You need to scrape the chart first with [Beatport] or(#beatport-top100-chart-scraper), [Traxsource](#traxsource-top100-chart-scraper)<br>
+Perform Key, BPM, Label, Artist analysis and plot their distributions
+```bash
+python emd/analyze_chart.py -p=<chart_json_path> --save-figure
+```

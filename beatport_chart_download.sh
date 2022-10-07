@@ -7,7 +7,7 @@ conda activate emd
 
 # Get the track information
 echo "Getting Chart Information..."
-python emd/beatport/scrape_beatport.py -u=$1
+python emd/beatport/chart_scraper.py -u=$1
 
 # Find the last json file created
 chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
