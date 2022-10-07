@@ -1,10 +1,15 @@
 import os
+import sys
 import re
 import json
 import datetime as dt
 import requests
 import argparse
 from bs4 import BeautifulSoup
+
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
 
 from analyze_chart import analyze_and_plot
 from utilities import duration_str_to_int,make_name,replace_non_ascii,format_key

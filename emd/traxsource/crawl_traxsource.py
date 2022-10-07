@@ -1,10 +1,15 @@
 import os
+import sys
 import re
 import json
 import argparse
 import datetime as dt
 import requests
 from bs4 import BeautifulSoup
+
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
 
 from scrape_traxsource import scrape_track
 from utilities import format_genre_string
