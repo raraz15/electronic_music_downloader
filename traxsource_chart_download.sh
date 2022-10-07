@@ -6,19 +6,19 @@ source ~/.bash_profile
 conda activate emd
 
 # Get the track information
-echo "Getting Playlist Information..."
-python emd/spotify/scrape_spotify.py -u=$1
+echo "Getting Chart Information..."
+python emd/traxsource/scrape_traxsource.py -u=$1
 
 # Find the last json file created
-playlist_path=$(find "Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
+chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
 
 # Find the Youtube URLs
 echo
 echo "Getting Youtube links..."
-python emd/youtube/youtube_searcher.py -p=$playlist_path
+python emd/youtube/youtube_searcher.py -p=$chart_path
 
-# Find the last json file created
-query_path=$(find "Queries" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
+# Use the name of the chart to get the query path
+query_path="$(basename $chart_path .json)-Queries.json"
 
 # Download each track
 echo

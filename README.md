@@ -16,7 +16,8 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 * [Download mp3 files only if original sampling rate>44.1kHz with preferably 128kbps at 16 bits](#youtube-mp3-downloader)
 ### Pipelines
 * [Get metadata and download the mp3 files of tracks of a Spotify Playlist with a pipeline](#get-metadata-of-a-spotify-playlist-and-download-mp3-files-from-youtube)
-* [Get metadata and download the mp3 files of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-top100-chart-and-download-mp3-files-from-youtube)
+* [Get metadata and download the mp3 files of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-or-traxsource-top100-chart-and-download-mp3-files-from-youtube)
+* [Get metadata and download the mp3 files of tracks of a Traxsource Top100 Chart with a pipeline](#get-metadata-of-a-beatport-or-traxsource-top100-chart-and-download-mp3-files-from-youtube)
 ### TODO:
 - [ ] URL with _ or not?
 - [ ] Package structure for each website
@@ -49,6 +50,7 @@ Using the terminal in the current directory:
 ```bash
 chmod u+x spotify_playlist_download.sh
 chmod u+x beatport_chart_download.sh
+chmod u+x traxsource_chart_download.sh
 ```
 ### 4) Activate the environment
 ```bash
@@ -64,14 +66,17 @@ When you have these information, paste them in `spotify_client_info.json`
 
 ## Pipelines
 
-### Get metadata of a Beatport Top100 Chart and Download mp3 files from Youtube
+### Get metadata of a Beatport  or Traxsource Top100 Chart and Download mp3 files from Youtube
 This pipeline does 3 things in series.
-1. Gets the information of the tracks in a Beatport Top100 Chart
+1. Gets the information of the tracks in a Beatport/Traxsource Top100 Chart
 2. Makes Youtube searches for finding these tracks.
 3. Only downloads the tracks if they satisfy certaion criteria.
 
 ```bash
-./beatport_chart_download.sh <Top100_Chart_URI>
+./beatport_chart_download.sh <Top100_Chart_URL>
+```
+```bash
+./traxsource_chart_download.sh <Top100_Chart_URL>
 ```
 
 ### Get metadata of a Spotify Playlist and Download mp3 files from Youtube
