@@ -1,6 +1,6 @@
 # electronic_music_downloader
 
-A repository for obtaining metadata about electronic music tracks collected in Beatport and Traxsource Top100 charts and Spotify Playlists. It can make a Youtube search and download medium quality mp3 files of these tracks. It can also crawl Beatport and get metadata for all electronic music genres and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks.
+A repository for obtaining metadata, downloading electronic music mp3s and editing ID3tags collected in Beatport and Traxsource Top100 charts and Spotify Playlists. It can make a Youtube search and download medium quality mp3 files (128kbps, 16bit) of these tracks. It can also crawl Beatport and Traxsource and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks.
 
 ## Table of Contents
 * [Installation](#installation)
@@ -117,9 +117,9 @@ Example of a track metadata:
 }
 ```
 
-### Beatport Chart Analysis
+### Chart Analysis
 ```bash
-python emd/analyze_beatport.py -p=<chart_json_path> --save-figure
+python emd/analyze_chart.py -p=<chart_json_path> --save-figure
 ```
 Perform Key, BPM, Label, Artist analysis and plot their distributions
 

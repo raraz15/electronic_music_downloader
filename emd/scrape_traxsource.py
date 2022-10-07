@@ -6,7 +6,7 @@ import requests
 import argparse
 from bs4 import BeautifulSoup
 
-from analyze_beatport import analyze_and_plot
+from analyze_chart import analyze_and_plot
 from utilities import duration_str_to_int,make_name,replace_non_ascii,format_key
 from info import CHARTS_DIR # Default directory
 
