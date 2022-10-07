@@ -123,7 +123,7 @@ Example of a track metadata:
 ```
 
 ### Chart Analysis
-Can analyze the Top100 Charts of Beatport and Traxsource. You need to scrape the chart first [Beatport](#beatport-top100-chart-scraper), [Traxsource](#traxsource-top100-chart-scraper)
+Can analyze the Top100 Charts of Beatport and Traxsource. You need to scrape the chart first with [Beatport] or(#beatport-top100-chart-scraper), [Traxsource](#traxsource-top100-chart-scraper)
 ```bash
 python emd/analyze_chart.py -p=<chart_json_path> --save-figure
 ```
