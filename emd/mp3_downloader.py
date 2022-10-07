@@ -38,37 +38,29 @@ def clean_file_name(title,output_dir):
 		print(f"Changing {title} to: {clean_title}")
 		shutil.move(f"{output_dir}/{title}.mp3",f"{output_dir}/{clean_title}.mp3")
 
-def main(URL,output_dir,verbose=True,clean=False):
-	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
-	If its a playlist, first flattens the list.
-	"""
-
-	# Initialize the output format
-	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
-
-	# Flatten the links if its a playlist
-	links=[]
-	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl: # Get all the individual links
-		result=ydl.extract_info(URL, download=False)
+def flatten_playlist(url):
+	"""If the url is of a playlist, it flattens it."""
+	urls=[]
+	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl: # Get all the individual urls
+		result=ydl.extract_info(url, download=False)
 		if 'entries' in result: # Playlist
 			for i,_ in enumerate(result['entries']):
-				links.append(result['entries'][i]['webpage_url'])
+				urls.append(result['entries'][i]['webpage_url'])
 			print("Flattened the playlist.")
 		else:
-			links=[URL] # Single track
-	if verbose:
-		print("Starting to download...\n")
+			urls=[url] # Single track
+	return urls
 
-	for i,link in enumerate(links):
-		if verbose:
-			print(f"{i+1}/{len(links)}")
-		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
-			# Get information to determine name formatting
-			info_dict=ydl.extract_info(link, download=False)
-			# Check the audio sampling rate
-			if int(info_dict.get('asr', None))<44100:
-				print("Low sampling rate! Skipping.")
-				continue
+def download_single_track(url,output_dir,clean=False):
+	attempt=False
+	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
+		# Get information to determine name formatting
+		info_dict=ydl.extract_info(url,download=False)
+		# Check the audio sampling rate
+		if int(info_dict.get('asr', None))<44100:
+			attempt=True
+			print("Low sampling rate! Skipping.")
+		else:
 			artist=info_dict.get('artist',None)
 			track=info_dict.get('track',None)
 			# Change the formatting if artist and track name is specified
@@ -77,23 +69,40 @@ def main(URL,output_dir,verbose=True,clean=False):
 				YDL_OPTS['outtmpl']=f"{output_dir}/{form}"
 				title=f"{artist} - {track}"
 			else: # Attempt download with the current format
+				attempt=True
 				title=info_dict.get('title', None)
 				try:
-					ydl.download([link])
+					ydl.download([url])
 					if clean:
 						clean_file_name(title,output_dir)
 				except Exception:
-					print(f"There was an error on: {link}")
+					print(f"There was an error on: {url}")
 				print("")
-				continue
+	if not attempt:
 		# Set the new format and Download
 		with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 			try:
-				ydl.download([link])
+				ydl.download([url])
 				if clean:
 					clean_file_name(title,output_dir)
 			except Exception:
-				print(f"There was an error on: {link}")
+				print(f"There was an error on: {url}")
+
+def main(url,output_dir,verbose=True,clean=False):
+	"""Downloads the youtube mp3 to the output_dir with metadata formatting.
+	If its a playlist, first flattens the list.
+	"""
+
+	# Initialize the output format
+	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
+	# Flatten the urls if its a playlist
+	urls=flatten_playlist(url)
+	if verbose:
+		print("Starting to download...\n")
+	for i,url in enumerate(urls):
+		if verbose:
+			print(f"{i+1}/{len(urls)}")
+		download_single_track(url,output_dir,clean)
 		# Go back to the default format
 		YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
 		print("")
