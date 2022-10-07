@@ -1,8 +1,12 @@
-import os
+import os,sys
 import re
 import shutil
 import argparse
 import datetime as dt
+
+PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
+LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
+sys.path.append(LIBRARY_PATH)
 
 import youtube_dl
 from mutagen.id3 import ID3, TPE1, TIT2
