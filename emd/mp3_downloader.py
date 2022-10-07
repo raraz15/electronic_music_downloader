@@ -18,7 +18,6 @@ YDL_OPTS={
 		'postprocessors': [{'key': 'FFmpegExtractAudio',
 							'preferredcodec': 'mp3',
 							}],
-		# 'preferredquality': '320' upsamples, not real 320kbps
 	}
 
 def clean_file_name(title,output_dir):
@@ -42,6 +41,7 @@ def clean_file_name(title,output_dir):
 def flatten_playlist(url):
 	"""If the url is of a playlist, it flattens it."""
 	urls=[]
+	print("\nChecking if playlist or single track...")
 	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl: # Get all the individual urls
 		result=ydl.extract_info(url, download=False)
 		if 'entries' in result: # Playlist
@@ -53,7 +53,6 @@ def flatten_playlist(url):
 	return urls
 
 def set_id3_tag(audio_path,id3_tag):
-	print("Setting the id3 tag...")
 	artist,title=id3_tag
 	audio=ID3(audio_path)
 	audio['TPE1']=TPE1(encoding=3,text=artist)
@@ -61,6 +60,7 @@ def set_id3_tag(audio_path,id3_tag):
 	audio.save(v2_version=3)
 
 def download_single_track(url,output_dir,clean=False,id3_tag=None):
+	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}" # Initialize the output format
 	attempt=False
 	with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
 		# Get information to determine name formatting
@@ -103,23 +103,8 @@ def download_single_track(url,output_dir,clean=False,id3_tag=None):
 					clean_file_name(title,output_dir)
 			except Exception:
 				print(f"There was an error on: {url}")
-
-def main(url,output_dir,verbose=True,clean=False):
-	"""Downloads the youtube mp3/mp3s to output_dir with metadata, id3 tag formatting."""
-
-	# Initialize the output format
+	# Go back to the default format for loops
 	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
-	# Flatten the urls if its a playlist
-	urls=flatten_playlist(url)
-	if verbose:
-		print("Starting to download...\n")
-	for i,url in enumerate(urls):
-		if verbose:
-			print(f"{i+1}/{len(urls)}")
-		download_single_track(url,output_dir,clean)
-		# Go back to the default format
-		YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
-		print("")
 
 # TODO: change the name to download_mp3
 # TODO: faster flattening
@@ -135,5 +120,10 @@ if __name__ == '__main__':
 	os.makedirs(args.output, exist_ok=True)
 	print(f"Track(s) will be downloaded to: {args.output}")
 
+	urls=flatten_playlist(args.url) # Flatten the urls if its a playlist
 	# Download
-	main(args.url,args.output,clean=args.clean)
+	print("Starting to download...\n")
+	for i,url in enumerate(urls):
+		print(f"{i+1}/{len(urls)}")
+		download_single_track(url,args.output,args.clean)
+		print("")
