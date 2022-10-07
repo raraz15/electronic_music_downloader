@@ -99,7 +99,7 @@ Each of the scripts have a default directory where the outputs will be written. 
 
 ### Beatport Top100 Chart Scraper
 ```bash
-python emd/scrape_beatport.py -u=<URL> --analyze --save-figure --preview
+python emd/beatport/scrape_beatport.py -u=<URL> --analyze --save-figure --preview
 ```
 `--analyze`: Will perform Key, BPM, Label, Artist analysis<br>
 `--save-figure`: Will save these figures<br>
@@ -123,6 +123,7 @@ Example of a track metadata:
 ```
 
 ### Chart Analysis
+Can analyze the Top100 Charts of Beatport and Traxsource. You need to scrape the chart first [Beatport](#beatport-top100-chart-scraper), [Traxsource](#traxsource-top100-chart-scraper)
 ```bash
 python emd/analyze_chart.py -p=<chart_json_path> --save-figure
 ```
@@ -130,38 +131,38 @@ Perform Key, BPM, Label, Artist analysis and plot their distributions
 
 ### Beatport Crawler
 ```bash
-python emd/crawl_beatport.py --preview
+python emd/beatport/crawl_beatport.py --preview
 ```
 `--preview`: Will download the LoFi Preview mp3 of the tracks
 
 ### Spotify Scraper
 ```bash
-python emd/scrape_spotify.py -u=<URI>
+python emd/spotify/scrape_spotify.py -u=<URI>
 ```
 It will save the track information of the playlist with provided URI<br>
 If output_dir not provided Playlists/playlist_name
 
 ### Traxsource Top100 Chart Scraper
 ```bash
-python emd/scrape_traxsource.py -u=<URL> --analyze --save-figure
+python emd/traxsource/scrape_traxsource.py -u=<URL> --analyze --save-figure
 ```
 `--analyze`: Will perform Key, BPM, Label, Artist analysis<br>
 `--save-figure`: Will save these figures<br>
 
 ### Traxsource Crawler
 ```bash
-python emd/crawl_traxsource.py
+python emd/traxsource/crawl_traxsource.py
 ```
 
 ### Youtube Searcher
 ```bash
-python/youtube_searcher.py -p=<chart_or_playlist_json_path> -N=5
+python/youtube/youtube_searcher.py -p=<chart_or_playlist_json_path> -N=5
 ```
 `-N`: determines the depth of the youtube search for a query
 
 ### Youtube mp3 Downloader
 ```bash
-python emd/mp3_downloader.py -u=<track_or_playlist_youtube_URL> --clean
+python emd/youtube/mp3_downloader.py -u=<track_or_playlist_youtube_URL> --clean
 ```
 `--clean`: after a track is downloaded its name will be cleaned and formatted<br>
 <br>
@@ -169,7 +170,7 @@ It will try to download the best possible bit rate, which is 128 kbps for Youtub
 
 ### Chart and Playlist Downloader
 ```bash
-python/download_queries.py -p=<queries_json_path> --clean
+python/youtube/download_queries.py -p=<queries_json_path> --clean
 ```
 Downloads all the tracks in the query.json file<br>
 `--clean`: after a track is downloaded its name will be cleaned and formatted<br>
