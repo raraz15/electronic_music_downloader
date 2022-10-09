@@ -22,6 +22,9 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 - [ ] URL with _ or not?
 - [ ] Put beatport url of each track
 - [ ] TraxSource download Preview mp3
+- [ ] Test function
+- [ ] setup.py
+- [ ] scripts folder
 - [ ] Discogs scrape (Later)
 - [ ] Id3tag: Mix type, remixers, artwork (Later)
 

@@ -110,7 +110,6 @@ def download_single_track(url,output_dir,clean=False,id3_tag=None):
 	# Go back to the default format for loops
 	YDL_OPTS['outtmpl']=f"{output_dir}/{SIMPLE_FORMAT}"
 
-# TODO: change the name to download_mp3
 # TODO: faster flattening
 if __name__ == '__main__':
 
@@ -123,8 +122,8 @@ if __name__ == '__main__':
 	# Create the output directory
 	os.makedirs(args.output, exist_ok=True)
 	print(f"Track(s) will be downloaded to: {args.output}")
-
-	urls=flatten_playlist(args.url) # Flatten the urls if its a playlist
+	# Flatten the urls if its a playlist
+	urls=flatten_playlist(args.url)
 	# Download
 	print("Starting to download...\n")
 	for i,url in enumerate(urls):
