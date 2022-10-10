@@ -62,7 +62,7 @@ if __name__ == "__main__":
                                 'Album Name': track['album']['name'],
                                 'Album Type': track['album']['type'],
                                 'Duration(sec)': track['duration_ms']//1000,
-                                'Release': track['album']['release_date'],
+                                'Released': track['album']['release_date'],
                                 'Images': track['album']['images'],
                                 'Popularity': track['popularity']
                                 }
