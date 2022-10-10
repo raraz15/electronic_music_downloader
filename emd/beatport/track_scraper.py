@@ -47,9 +47,28 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser(description='Beatport Track Scraper')
     parser.add_argument('-u', '--url', type=str, required=True, help='Track URL.')
     parser.add_argument('-o', '--output', type=str, default='', help='Specify an output directory.')
-    #parser.add_argument('--preview', action='store_true', help='Download the preview mp3.')
+    parser.add_argument('--preview', action='store_true', help='Download the preview mp3.')
     args=parser.parse_args()
 
+    # Scrape the information
     print(f"Scraping information from: {args.url}")
-    track_dict=scrape_track(args.url)
-    print(json.dumps(track_dict,indent=4))
+    track=scrape_track(args.url)
+    print(json.dumps(track,indent=4))
+    # If user specified a directory, export the json file
+    if args.output!='':
+        # Create the Output Directory
+        os.makedirs(args.output,exist_ok=True)
+        # Export to json
+        output_path=os.path.join(args.output,track["Title"]+".json")
+        with open(output_path,'w', encoding='utf8') as outfile:
+            json.dump(track, outfile, indent=4)
+        print(f"Exported the track information to: {output_path}\n")
+
+        # Download the preview mp3 if specified
+        if args.preview:
+            print(f"Downloading the Preview mp3s to: {args.output}")
+            req=requests.get(track["Preview"])
+            with open(os.path.join(args.output,f"{track['Title']}.mp3"),"wb") as f:
+                f.write(req.content)
+
+    print("Done!")
