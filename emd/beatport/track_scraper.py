@@ -9,58 +9,38 @@ PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
 LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
 sys.path.append(LIBRARY_PATH)
 
-from utilities import replace_non_ascii,make_name,key_formatter,duration_str_to_int
+from utilities import replace_non_ascii,make_name,key_formatter
 
 HOME_PAGE="https://www.beatport.com"
 
-# TODO: Get Preview
 def scrape_track(url):
-
+    # Load the Page
     html=requests.get(url).content
     bsObj=BeautifulSoup(html,'lxml')
-
-    track_soup=bsObj.find("main",{"class":"interior"})
-    top_soup=track_soup.find("div",{"class":"interior-top interior-top-track"})
-    title_soup=top_soup.find("div",{"class":"interior-title"})
-    title_version=title_soup.findAll("h1")
-    title=title_version[0].text
-    mix=title_version[1].text
-
-    content_soup=bsObj.find("div",{"class":"interior-track-title-parent"})
-    artists_remixers_soup=content_soup.findAll("div",{"class","interior-track-artists"})
-    if len(artists_remixers_soup)!=2:
-        artist_list=[x.text for x in artists_remixers_soup[0].findAll("a")]
-        remixers_list=[]
-    else:
-        artist_list=[x.text for x in artists_remixers_soup[0].findAll("a")]
-        remixers_list=[x.text for x in artists_remixers_soup[1].findAll("a")]
-
-    track_content_soup=track_soup.find("ul",{"class":"interior-track-content-list"})
-    str_root="interior-track-content-item interior-track-"
-    duration=track_content_soup.find("li",{"class":f"{str_root}length"}).find("span",{"class","value"}).text
-    released=track_content_soup.find("li",{"class":f"{str_root}released"}).find("span",{"class","value"}).text
-    bpm=track_content_soup.find("li",{"class":f"{str_root}bpm"}).find("span",{"class","value"}).text
-    key=track_content_soup.find("li",{"class":f"{str_root}key"}).find("span",{"class","value"}).text
-    genre=track_content_soup.find("li",{"class":f"{str_root}genre"}).find("a").text
-    label=track_content_soup.find("li",{"class":f"{str_root}labels"}).find("a").text
-
-    image=track_soup.find("img",{"class":"interior-track-release-artwork"})["src"]
-
-    return {'Title': replace_non_ascii(title),
-            'Mix': mix,
-            'Artist(s)': make_name(artist_list),
-            'Remixer(s)': make_name(remixers_list),
-            'Genre': genre,
-            'Duration(sec)': duration_str_to_int(duration),
-            'Duration(min)': duration,
-            'BPM': int(bpm),
-            'Key': key_formatter(key),
-            'Label': replace_non_ascii(label),
-            'Released': released,
-            'URL': url,
-            'Image_URL': image,
-            #'Preview': track["preview"]["mp3"]["url"]
+    # Decode the script for fast scraping
+    split='{"active":' # How beaport encodes information
+    track_str=bsObj.findAll("script",{"type":"text/javascript"})[1].string.split(split)[1]
+    loc=track_str.find(";\n")
+    track_str=track_str[:loc]   # Remove trailing garbage
+    track_str=split+track_str   # Add the initially removed part from the split
+    track=json.loads(track_str) # So that json can load it as a dict
+    # Format the necessary information
+    track={'Title': replace_non_ascii(track["release"]["name"]),
+            'Mix': track["mix"],
+            'Artist(s)': make_name([x["name"] for x in track["artists"]]),
+            'Remixer(s)': make_name([x["name"] for x in track["remixers"]]),
+            'Label': replace_non_ascii(track["label"]["name"]),
+            'Genre': make_name([x["name"] for x in track['genres']]),
+            'Duration(sec)': track["duration"]["milliseconds"]//1000,
+            'Duration(min)': track["duration"]["minutes"],
+            'BPM': track["bpm"],
+            'Key': key_formatter(track["key"]),
+            'Released': track["date"]["released"],
+            'Track URL': url,
+            'Image URL': track["images"]["medium"]["url"],
+            'Preview': track["preview"]["mp3"]["url"]
             }
+    return track
 
 if __name__ == '__main__':
 
