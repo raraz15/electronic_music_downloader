@@ -11,8 +11,6 @@ sys.path.append(LIBRARY_PATH)
 
 from utilities import replace_non_ascii,make_name,key_formatter
 
-HOME_PAGE="https://www.beatport.com"
-
 def scrape_track(url):
     # Load the Page
     html=requests.get(url).content
