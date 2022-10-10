@@ -15,6 +15,7 @@ from info import CHARTS_DIR # Default directory
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 
+# TODO: put track URLs
 def split_to_tracks(my_string):
     """Splits the soup string into track_dicts."""
     split='{"active":'
