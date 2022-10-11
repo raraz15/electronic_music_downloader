@@ -30,7 +30,16 @@ if __name__=="__main__":
     matches=bsObj.find_all("a",{"class": "genre-drop-list__genre"})
     genre_dict={m["data-name"]: f"{URL}/{m['href']}" for m in matches}
     print(f"{len(genre_dict)} Genre URLs returned.")
-    # Find the Top100 links of each genre and scrape its track information
+
+    # If user specified a directory, overwrite the default
+    if args.output!='':
+        output_dir=args.output
+    else:
+        output_dir=os.path.join(CRAWL_DIR, f"BeatportTop100-{DATE}")
+    os.makedirs(output_dir, exist_ok=True)
+    print(f"Charts will be exported to: {output_dir}")
+
+    # Find the Top100 links of each genre, scrape its track information, export
     charts={}
     for genre,url in genre_dict.items():
         print(f"\nRetrieving {genre} Top100 Chart metadata...")
@@ -43,17 +52,7 @@ if __name__=="__main__":
         # Get the chart information
         tracks=scrape_chart(url_top100)
         charts[genre]=tracks
-
-    # If user specified a directory, overwrite the default
-    if args.output!='':
-        output_dir=args.output
-    else:
-        output_dir=os.path.join(CRAWL_DIR, f"BeatportTop100-{DATE}")
-    os.makedirs(output_dir, exist_ok=True)
-    print(f"Exporting the charts to: {output_dir}")
-
-    # Export to json
-    for genre,tracks in charts.items():
+        # Export to json
         chart_name=f"{genre}-BeatportTop100-{DATE}"
         output_path=os.path.join(output_dir,chart_name+".json")
         with open(output_path,'w', encoding='utf8') as outfile:
