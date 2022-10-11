@@ -9,33 +9,66 @@ PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
 LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
 sys.path.append(LIBRARY_PATH)
 
-from track_scraper import scrape_track
+from utilities import replace_non_ascii,make_name,key_formatter
 from analyze_chart import analyze_and_plot
 from info import CHARTS_DIR # Default directory
 
 HOME_PAGE="https://www.beatport.com"
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 
+def split_to_tracks(bsObj):
+    """Splits the soup string into track_dicts. (Messier but much more faster)"""
+
+    my_string=bsObj.find("script", {"id": "data-objects"}).string
+    split='{"active":'
+    lst=my_string.split(split)
+    if len(lst)!=101:
+        print("Split went wrong!")
+    track_dicts={}
+    for i in range(1,101):
+        track_str=lst[i]
+        if i==100:
+            loc=track_str.find(";\n")
+            track_str=track_str[:loc] # Remove garbage
+        track_str=split+track_str   # Add the removed part from the split
+        track_str=track_str[:-2] # Remove the space at the end
+        track=json.loads(track_str) # Convert the track soup to dict
+        track_dicts[i]={'Title': replace_non_ascii(track["release"]["name"]),
+                      'Mix': track["mix"],
+                      'Artist(s)': make_name([x["name"] for x in track["artists"]]),
+                      'Remixer(s)': make_name([x["name"] for x in track["remixers"]]),
+                      'Duration(sec)': track["duration"]["milliseconds"]//1000,
+                      'Duration(min)': track["duration"]["minutes"],
+                      'BPM': track["bpm"],
+                      'Key': key_formatter(track["key"]),
+                      'Label': replace_non_ascii(track["label"]["name"]),
+                      'Released': track["date"]["released"],
+                      'Track URL': "", # put later
+                      'Image URL': track["images"]["medium"]["url"],
+                      'Preview': track["preview"]["mp3"]["url"]
+                    }
+    return track_dicts
+
+def find_track_urls(bsObj):
+    urls=[]
+    track_soups=bsObj.findAll("li",{"class":"bucket-item ec-item track"})
+    for track_soup in track_soups:
+        url_ext=track_soup.find("div",{"class":"buk-track-meta-parent"}).find("p",{"class":"buk-track-title"}).a['href']
+        urls.append(HOME_PAGE+url_ext)
+    return urls
+
 def scrape_chart(url):
     # Load the chart page
     html=requests.get(url).content
     bsObj=BeautifulSoup(html,'lxml')
-    # Find the track URLs
-    print("Finding the URLs of each track...")
-    track_soups=bsObj.findAll("li",{"class":"bucket-item ec-item track"})
-    url_extensions=[]
-    for track_soup in track_soups:
-        url_ext=track_soup.find("div",{"class":"buk-track-meta-parent"}).find("p",{"class":"buk-track-title"}).a['href']
-        url_extensions.append(url_ext)
-    if len(url_extensions)!=100:
-        print("Couldn't return 100 track URLs!")
-        sys.exit()
     # Parse each track
     print("Parsing the tracks...")
-    tracks={}
-    for i,url_ext in enumerate(url_extensions):
-        track_url=HOME_PAGE+url_ext
-        tracks[i+1]=scrape_track(track_url)
+    tracks=split_to_tracks(bsObj)
+    # Find the track URLs
+    print("Finding the URLs of each track...")
+    urls=find_track_urls(bsObj)
+    for i,url in enumerate(urls):
+        tracks[i+1]["Track URL"]=url
     print("Top Track:")
     print(json.dumps(tracks[1],indent=4))
     return tracks
