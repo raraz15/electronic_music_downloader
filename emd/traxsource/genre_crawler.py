@@ -17,7 +17,7 @@ from info import CRAWL_DIR
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 HOME_URL="https://www.traxsource.com"
-NON_GENRES=["Sounds, Samples & Loops","DJ Tools","Acapella","Beats","Efx"]
+NON_GENRES=["Sounds, Samples & Loops","DJ Tools","Acapella","Beats","Efx","Stems"]
 
 if __name__=="__main__":
 

@@ -1,6 +1,6 @@
 # electronic_music_downloader
 
-A repository for obtaining metadata, downloading electronic music mp3s and editing ID3tags collected in Beatport and Traxsource Top100 charts and Spotify Playlists. It can make a Youtube search and download medium quality mp3 files (128kbps, 16bit) of these tracks. It can also crawl Beatport and Traxsource and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks.
+A repository for obtaining metadata, downloading electronic music mp3s and editing ID3tags collected in Beatport and Traxsource Top100 charts and Spotify Playlists. It can make a electronic music oriented Youtube search and download their medium quality mp3 files (128kbps, 16bit). It can also crawl Beatport and Traxsource and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks.
 
 ## Table of Contents
 * [Installation](#installation)
@@ -21,9 +21,8 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 ### TODO:
 - [ ] TraxSource download Preview mp3
 - [ ] setup.py
-- [ ] scripts folder (opt)
 - [ ] Discogs scrape (Later)
-- [ ] Id3tag: Mix type, remixers, artwork (Later)
+- [ ] Put Id3tag with a beatport query (Later)
 
 ## Installation
 
@@ -72,10 +71,10 @@ This pipeline does 3 things in series.
 3. Only downloads the tracks if they satisfy certaion criteria.
 
 ```bash
-./beatport_chart_download.sh <Top100_Chart_URL>
+pipelines/beatport_chart_download.sh <Top100_Chart_URL>
 ```
 ```bash
-./traxsource_chart_download.sh <Top100_Chart_URL>
+pipelines/traxsource_chart_download.sh <Top100_Chart_URL>
 ```
 
 ### Get metadata of a Spotify Playlist and Download mp3 files from Youtube
