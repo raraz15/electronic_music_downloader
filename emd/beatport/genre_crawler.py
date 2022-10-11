@@ -10,7 +10,7 @@ PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
 LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
 sys.path.append(LIBRARY_PATH)
 
-from chart_scraper import split_to_tracks
+from chart_scraper import scrape_chart
 from utilities import format_genre_string
 from info import CRAWL_DIR
 
@@ -41,13 +41,8 @@ if __name__=="__main__":
         # Modify name
         genre=format_genre_string(genre)
         # Get the chart information
-        html=requests.get(url_top100).content
-        bsObj=BeautifulSoup(html, 'lxml')
-        my_script=bsObj.find("script", {"id": "data-objects"})
-        tracks=split_to_tracks(my_script.string)
+        tracks=scrape_chart(url_top100)
         charts[genre]=tracks
-        print(f"Top Track:")
-        print(json.dumps(tracks[1],indent=4))
 
     # If user specified a directory, overwrite the default
     if args.output!='':

@@ -11,7 +11,7 @@ PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
 LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
 sys.path.append(LIBRARY_PATH)
 
-from chart_scraper import scrape_track
+from chart_scraper import scrape_chart
 from utilities import format_genre_string
 from info import CRAWL_DIR
 
@@ -46,16 +46,7 @@ if __name__=="__main__":
             chart_url=HOME_URL+genre_url_ext+"/top"
             if genre in NON_GENRES: # Some of them are not genres
                 continue
-            # Load the Top100 Chart page
-            genre_html=requests.get(chart_url).content
-            genre_bsObj=BeautifulSoup(genre_html,'lxml')
-            # Find track URLs
-            track_urls=[]
-            for a in genre_bsObj.findAll("a",{"href":re.compile(r"/track/[0-9]*")}):
-                track_urls.append(HOME_URL+a['href'])
-            # Get the metadata of each track
-            print(f"\nRetrieving {genre} Top100 Chart metadata...")
-            tracks={idx+1:scrape_track(url) for idx,url in enumerate(track_urls)}
+            tracks=scrape_chart(chart_url)
             charts[genre]=tracks
             print(f"Top Track:")
             print(json.dumps(tracks[1],indent=4))

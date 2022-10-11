@@ -19,12 +19,9 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 * [Get metadata and download the mp3 files of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-or-traxsource-top100-chart-and-download-mp3-files-from-youtube)
 * [Get metadata and download the mp3 files of tracks of a Traxsource Top100 Chart with a pipeline](#get-metadata-of-a-beatport-or-traxsource-top100-chart-and-download-mp3-files-from-youtube)
 ### TODO:
-- [ ] URL with _ or not?
-- [ ] Put beatport url of each track
 - [ ] TraxSource download Preview mp3
-- [ ] Test function
 - [ ] setup.py
-- [ ] scripts folder
+- [ ] scripts folder (opt)
 - [ ] Discogs scrape (Later)
 - [ ] Id3tag: Mix type, remixers, artwork (Later)
 
@@ -109,18 +106,20 @@ python emd/beatport/chart_scraper.py -u=<URL> --analyze --save-figure --preview
 Example of a track metadata:
 ```json
 {
-    "Title": "Yeah The Girls",
-    "Mix": "Extended Mix",
-    "Artist(s)": "FISHER (OZ)",
+    "Title": "Smack Yo'",
+    "Mix": "Original Mix",
+    "Artist(s)": "Beltran (BR)",
     "Remixer(s)": "",
-    "Duration(sec)": 381,
-    "Duration(min)": "6:21",
-    "BPM": 126,
-    "Key": "F min",
-    "Label": "Catch & Release",
-    "Released": "2022-09-02",
-    "Image Links": "https://geo-media.beatport.com/image_size/1400x1400/594a3d53-5194-46f9-8ad6-5ff3f5dc4eb0.jpg",
-    "Preview": "https://geo-samples.beatport.com/track/8de19c7f-ad00-47a0-ba26-f8912875284c.LOFI.mp3"
+    "Label": "Solid Grooves Raw",
+    "Genre": "Tech House",
+    "Duration(sec)": 306,
+    "Duration(min)": "5:06",
+    "BPM": 127,
+    "Key": "G maj",
+    "Released": "2022-09-30",
+    "Track URL": "https://www.beatport.com/track/smack-yo/16924577",
+    "Image URL": "https://geo-media.beatport.com/image_size/1400x1400/b7db5333-f7c2-490d-9b07-e95df80a49a0.jpg",
+    "Preview": "https://geo-samples.beatport.com/track/b776a31b-cb84-477f-a7bb-0476c5a1ee8e.LOFI.mp3"
 }
 ```
 

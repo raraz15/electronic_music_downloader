@@ -11,46 +11,26 @@ PACKAGE_PATH=os.path.dirname(os.path.realpath(__file__))
 LIBRARY_PATH=os.path.dirname(PACKAGE_PATH)
 sys.path.append(LIBRARY_PATH)
 
+from track_scraper import scrape_track
 from analyze_chart import analyze_and_plot
-from utilities import duration_str_to_int,make_name,replace_non_ascii,format_key
 from info import CHARTS_DIR # Default directory
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 HOME_URL="https://www.traxsource.com"
 
-def scrape_track(url):
-    """Scrapes information for a single track from url"""
-
-    # Load the track page
+def scrape_chart(url):
+    # Load the chart page
     html=requests.get(url).content
-    bsObj=BeautifulSoup(html,'lxml')
-    # Scrape the data
-    artists_list=[x.string for x in bsObj.findAll("a", {"class": {"com-artists"}})]
-    remixers_list=[x.string for x in bsObj.findAll("a", {"class": {"com-remixers"}})]
-    title=bsObj.find("h1", {"class": "title"}).string
-    version=bsObj.find("h1", {"class": "version"}).string
-    image_link=bsObj.find("div", {"class": "tr-image"}).find("img")['src']
-    # Odd elements of the table have the data
-    matches=bsObj.find("div", {"class": "tr-details"}).find("table").findAll("td")
-    label,released,duration,genre,key,bpm=[r.string for r in matches[1::2]]
-    # Combine
-    track={'Title': replace_non_ascii(title),
-            'Mix': "" if version is None else version,
-            'Artist(s)': make_name(artists_list),
-            'Remixer(s)': make_name(remixers_list),
-            'Duration(sec)':duration_str_to_int(duration),
-            'Duration(min)': duration,
-            'BPM': int(bpm) if bpm is not None else 0,
-            'Key': format_key(key) if key is not None else "",
-            'Label': replace_non_ascii(label),
-            'Released': released,
-            'Track URL': url,
-            'Image URL': image_link,
-            #'Preview': track["preview"]["mp3"]["url"]
-            }
-    return track
+    bsObj=BeautifulSoup(html, 'lxml')
+    # Find track URLs
+    track_urls=[]
+    for a in bsObj.findAll("a",{"href":re.compile(r"/track/[0-9]*")}):
+        track_urls.append(HOME_URL+a['href'])
+    # Get the metadata of each track
+    print("Retrieving the metadata...")
+    tracks={idx+1: scrape_track(track_url) for idx,track_url in enumerate(track_urls)}
+    return tracks
 
-# TODO: Get the Preview mp3
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Traxsource Top100 Analyzer')
@@ -74,18 +54,8 @@ if __name__ == '__main__':
     SIMPLE_NAME=genre.replace('_',' ') # For Plotting and Printing
     print(f"{SIMPLE_NAME} - Top 100")
     
-    # Load the chart page
-    html=requests.get(chart_url).content
-    bsObj=BeautifulSoup(html, 'lxml')
-
-    # Find track URLs
-    track_urls=[]
-    for a in bsObj.findAll("a",{"href":re.compile(r"/track/[0-9]*")}):
-        track_urls.append(HOME_URL+a['href'])
-
-    # Get the metadata of each track
-    print("Retrieving the metadata...")
-    tracks={idx+1: scrape_track(track_url) for idx,track_url in enumerate(track_urls)}
+    # Scrape the chart information
+    tracks=scrape_chart(chart_url)
 
     # If user specified a directory, overwrite the default
     if args.output!='':
