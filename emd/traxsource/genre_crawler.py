@@ -37,7 +37,6 @@ if __name__=="__main__":
     html=requests.get(HOME_URL).content
     bsObj=BeautifulSoup(html,'lxml')
     # Crawl Through the Genres and scrape the charts
-    charts={}
     for split in bsObj.findAll("div",{"class":"mn-split"}): # Two Columns of Genres
         for flt in split.findAll("a",{"class":"flt"}): # For each genre
             # Get the Genre URL
@@ -47,7 +46,6 @@ if __name__=="__main__":
             if genre in NON_GENRES: # Some of them are not genres
                 continue
             tracks=scrape_chart(chart_url)
-            charts[genre]=tracks
             print(f"Top Track:")
             print(json.dumps(tracks[1],indent=4))
             # Export because slow scraping
