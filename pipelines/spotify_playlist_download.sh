@@ -10,7 +10,7 @@ echo "Getting Playlist Information..."
 python emd/spotify/playlist_scraper.py -u=$1
 
 # Find the last json file created
-playlist_path=$(find "Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
+playlist_path=$(find "Downloads/Playlists" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
 
 # Find the Youtube URLs
 echo
@@ -18,7 +18,7 @@ echo "Getting Youtube links..."
 python emd/youtube/youtube_searcher.py -p=$playlist_path
 
 # Find the last json file created
-query_path=$(find "Queries" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
+query_path=$(find "Downloads/Queries" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
 
 # Download each track
 echo
