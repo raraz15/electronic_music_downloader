@@ -10,7 +10,7 @@ echo "Getting Chart Information..."
 python emd/traxsource/chart_scraper.py -u=$1
 
 # Find the last json file created
-chart_path=$(find "Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
+chart_path=$(find "Downloads/Charts" -name "*.json" -print0 | xargs -r -0 ls -1 -t | head -1)
 
 # Find the Youtube URLs
 echo

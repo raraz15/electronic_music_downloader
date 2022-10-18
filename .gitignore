@@ -1,14 +1,10 @@
 # Personal
 .DS_Store
 
-Tracks/*
-Playlists/*
-Queries/*
-Charts/*
-Crawls/*
-
 *.mp3
 *.png
+
+Downloads/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
