@@ -1,6 +1,6 @@
 # electronic_music_downloader
 
-A repository for obtaining metadata, downloading electronic music mp3s and editing ID3tags collected in Beatport and Traxsource Top100 charts and Spotify Playlists. It can make a electronic music oriented Youtube search and download their medium quality mp3 files (128kbps, 16bit). It can also crawl Beatport and Traxsource and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks.
+A repository for obtaining metadata, downloading electronic music mp3s and editing ID3tags collected in Beatport and Traxsource Top100 charts and Spotify Playlists. It can make an electronic music oriented Youtube search and download medium quality mp3 files (44.1kHz, 128kbps, 16bit). It can also crawl Beatport and Traxsource and plot informative analysis figures. Moreover, it can download the LoFi Preview mp3 files of the Beatport tracks (Traxsource preview coming soon).
 
 ## Table of Contents
 * [Installation](#installation)
@@ -19,10 +19,10 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 * [Get metadata and download the mp3 files of tracks of a Beatport Top100 Chart with a pipeline](#get-metadata-of-a-beatport-or-traxsource-top100-chart-and-download-mp3-files-from-youtube)
 * [Get metadata and download the mp3 files of tracks of a Traxsource Top100 Chart with a pipeline](#get-metadata-of-a-beatport-or-traxsource-top100-chart-and-download-mp3-files-from-youtube)
 ### TODO:
-- [ ] TraxSource download Preview mp3
 - [ ] setup.py
+- [ ] TraxSource download Preview mp3
 - [ ] Discogs scrape (Later)
-- [ ] Put Id3tag with a beatport query (Later)
+- [ ] More ID3tags after a download (Later)
 
 ## Installation
 
@@ -30,7 +30,7 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 ```bash
 conda create --name emd --file environment.yml
 ```
-`Note:` if you change the *emd* name, you should change the line 6 at the bash scripts accordingly.
+`Note:` if you change the *emd* name, you should change the line 6 at all of the bash scripts accordingly. (Inside pipelines folder)
 
 ### 2) You will need the ffmpeg for youtube-dl
 
@@ -46,9 +46,9 @@ sudo apt-get install ffmpeg
 
 Using the terminal in the current directory:
 ```bash
-chmod u+x spotify_playlist_download.sh
-chmod u+x beatport_chart_download.sh
-chmod u+x traxsource_chart_download.sh
+chmod u+x pipelines/spotify_playlist_download.sh
+chmod u+x pipelines/beatport_chart_download.sh
+chmod u+x pipelines/traxsource_chart_download.sh
 ```
 ### 4) Activate the environment
 ```bash
@@ -89,7 +89,7 @@ To use this functionality you should:
 Open Spotify App from your computer, go to the playlist, click on the *more options* key (three dots), come to *share* while holding the **option key** on your keyboard. The *Copy playlist link* button will change to *Copy Spotify URI*.
 
 ```bash
-./spotify_playlist_download.sh <Spotify_playlist_URI>
+pipelines/spotify_playlist_download.sh <Spotify_playlist_URI>
 ```
 
 ## Single Task Python Scripts
