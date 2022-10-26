@@ -27,7 +27,6 @@ def scrape_chart(url):
     for a in bsObj.findAll("a",{"href":re.compile(r"/track/[0-9]*")}):
         track_urls.append(HOME_URL+a['href'])
     # Get the metadata of each track
-    print("Retrieving the metadata...")
     tracks={idx+1: scrape_track(track_url) for idx,track_url in enumerate(track_urls)}
     return tracks
 
@@ -52,8 +51,8 @@ if __name__ == '__main__':
     genre=chart_url.split("/")[-2].title().replace('-','_')
     CHART_NAME=f"{genre}-TraxsourceTop100-{DATE}"
     SIMPLE_NAME=genre.replace('_',' ') # For Plotting and Printing
-    print(f"{SIMPLE_NAME} - Top 100")
-    
+    print(f"\nRetrieving {SIMPLE_NAME} Top100 Chart metadata...")
+
     # Scrape the chart information
     tracks=scrape_chart(chart_url)
 

@@ -45,6 +45,7 @@ if __name__=="__main__":
             chart_url=HOME_URL+genre_url_ext+"/top"
             if genre in NON_GENRES: # Some of them are not genres
                 continue
+            print(f"\nRetrieving {genre} Top100 Chart metadata...")
             tracks=scrape_chart(chart_url)
             print(f"Top Track:")
             print(json.dumps(tracks[1],indent=4))
@@ -55,3 +56,4 @@ if __name__=="__main__":
             with open(output_path,'w', encoding='utf8') as outfile:
                 json.dump(tracks, outfile, indent=4)
             print(f"Exported chart information to: {output_path}")
+    print("Done!")

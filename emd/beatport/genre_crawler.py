@@ -58,7 +58,6 @@ if __name__=="__main__":
         with open(output_path,'w', encoding='utf8') as outfile:
             json.dump(tracks, outfile, indent=4)
         print(f"Exported {len(tracks)} track information to: {output_path}\n")
-
     # Download the preview mp3s
     if args.preview:
         preview_dir=os.path.join(output_dir,"Preview")
@@ -72,5 +71,4 @@ if __name__=="__main__":
                 req=requests.get(track["Preview"])
                 with open(os.path.join(genre_preview_dir,f"{track['Title']}.mp3"),"wb") as f:
                     f.write(req.content)
-
     print("Done!")
