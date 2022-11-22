@@ -28,7 +28,7 @@ A repository for obtaining metadata, downloading electronic music mp3s and editi
 
 ### 1) Create the Environment:
 ```bash
-conda create --name emd --file environment.yml
+conda create --file environment.yml
 ```
 `Note:` if you change the *emd* name, you should change the line 6 at all of the bash scripts accordingly. (Inside pipelines folder)
 
