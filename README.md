@@ -60,7 +60,13 @@ This part is only for using the Spotify functionalities of the repository.
 
 To get information from your Spotify playlists, you will need the `CLIENT_ID,CLIENT_SECRET` keys of the user. You can get these information following the steps in: https://developer.Spotify.com/documentation/general/guides/authorization/app-settings/
 
-When you have these information, paste them in `spotify_client_info.json`
+When you have these information, create a JSON file named `spotify_client_info.json` in the main directory with the following format:
+```json
+{
+    "CLIENT_ID": "your_client_id_as_a_string",
+    "CLIENT_SECRET": "your_client_secret_as_a_string"
+}
+```
 
 ## Pipelines
 

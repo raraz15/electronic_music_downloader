@@ -1,6 +1,7 @@
 # Personal
 .DS_Store
 
+spotify_client_info.json
 *.mp3
 *.png
 
