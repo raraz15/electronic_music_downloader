@@ -66,12 +66,21 @@ if __name__ == "__main__":
                                 'Images': track['album']['images'],
                                 'Popularity': track['popularity']
                                 }
-    print(f"{len(track_dicts)} Tracks' information is returned.") 
-    
+    print(f"{len(track_dicts)} Tracks' information is returned.")
+
+    # Create the output directory
+    output_name=f'{playlist_name}-{DATE}'
+    os.makedirs(args.output,exist_ok=True)
+
     # Export the track dicts in a json file
-    output_name=f'{playlist_name}-{DATE}.json'.format()
-    output_dir=os.path.join(args.output, output_name)
-    os.makedirs(args.output, exist_ok=True)
-    print(f'Exporting the playlist to: {output_dir}')
-    with open(output_dir, 'w') as outfile:
+    print(f'Exporting the playlist to: {args.output}')
+    with open(os.path.join(args.output,f"{output_name}.json"), 'w') as outfile:
         json.dump(track_dicts, outfile, indent=4)
+
+    # Also create a text file containing the track names
+    with open(os.path.join(args.output,f"{output_name}.txt"),"w") as outfile:
+        for idx,track_dict in track_dicts.items():
+            artist=track_dict["Artist(s)"]
+            title=track_dict["Title"]
+            track_title=f"{artist} - {title}"
+            outfile.write(track_title+"\n")
