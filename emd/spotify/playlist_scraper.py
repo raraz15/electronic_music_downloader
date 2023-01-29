@@ -78,6 +78,8 @@ if __name__ == "__main__":
         json.dump(track_dicts, outfile, indent=4)
 
     # Also create a text file containing the track names
+    # Sort the tracks by full title before exporting
+    track_dicts={k: v for k, v in sorted(track_dicts.items(), key=lambda x: f"{x[1]['Artist(s)']} - {x[1]['Title']}")}
     with open(os.path.join(args.output,f"{output_name}.txt"),"w") as outfile:
         for idx,track_dict in track_dicts.items():
             artist=track_dict["Artist(s)"]
