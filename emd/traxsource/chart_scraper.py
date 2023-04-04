@@ -27,7 +27,11 @@ def scrape_chart(url):
     for a in bsObj.findAll("a",{"href":re.compile(r"/track/[0-9]*")}):
         track_urls.append(HOME_URL+a['href'])
     # Get the metadata of each track
-    tracks={idx+1: scrape_track(track_url) for idx,track_url in enumerate(track_urls)}
+    tracks = {}
+    for idx,track_url in enumerate(track_urls):
+        tracks[idx+1]=scrape_track(track_url)
+        if not (idx+1%10):
+            print(f"[{idx+1}/{len(track_urls)}]")
     return tracks
 
 if __name__ == '__main__':

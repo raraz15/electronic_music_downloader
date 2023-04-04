@@ -16,6 +16,7 @@ from info import CHARTS_DIR # Default directory
 HOME_PAGE="https://www.beatport.com"
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 
+# TODO: replace release name with track name
 def split_to_tracks(bsObj):
     """Splits the soup string into track_dicts. (Messier but much more faster)"""
 
@@ -33,19 +34,21 @@ def split_to_tracks(bsObj):
         track_str=split+track_str   # Add the removed part from the split
         track_str=track_str[:-2] # Remove the space at the end
         track=json.loads(track_str) # Convert the track soup to dict
-        track_dicts[i]={'Title': replace_non_ascii(track["release"]["name"]),
-                      'Mix': track["mix"],
-                      'Artist(s)': make_name([x["name"] for x in track["artists"]]),
-                      'Remixer(s)': make_name([x["name"] for x in track["remixers"]]),
-                      'Duration(sec)': track["duration"]["milliseconds"]//1000,
-                      'Duration(min)': track["duration"]["minutes"],
-                      'BPM': track["bpm"],
-                      'Key': key_formatter(track["key"]),
-                      'Label': replace_non_ascii(track["label"]["name"]),
-                      'Released': track["date"]["released"],
-                      'Track URL': "", # put later
-                      'Image URL': track["images"]["medium"]["url"],
-                      'Preview': track["preview"]["mp3"]["url"]
+        track_dicts[i]={
+                        'Release Title': replace_non_ascii(track["release"]["name"]),
+                        'Track Title': '', # put later
+                        'Mix': track["mix"],
+                        'Artist(s)': make_name([x["name"] for x in track["artists"]]),
+                        'Remixer(s)': make_name([x["name"] for x in track["remixers"]]),
+                        'Duration(sec)': track["duration"]["milliseconds"]//1000,
+                        'Duration(min)': track["duration"]["minutes"],
+                        'BPM': track["bpm"],
+                        'Key': key_formatter(track["key"]),
+                        'Label': replace_non_ascii(track["label"]["name"]),
+                        'Released': track["date"]["released"],
+                        'Track URL': "", # put later for speed
+                        'Image URL': track["images"]["medium"]["url"],
+                        'Preview': track["preview"]["mp3"]["url"],
                     }
     return track_dicts
 
@@ -57,21 +60,47 @@ def find_track_urls(bsObj):
         urls.append(HOME_PAGE+url_ext)
     return urls
 
+def find_track_titles(bsObj):
+    titles = []
+    for row in bsObj.findAll(class_='bucket-item ec-item track'):
+        #track_id = row["data-ec-id"]
+        #track_title = row["data-ec-name"]
+        #release_url = row.find("div", class_="buk-track-artwork-parent").a.attrs["href"]
+        x = row.find("div", class_="buk-track-meta-parent")
+        #track_url = x.a["href"]
+        track_title = x.find("span", class_="buk-track-primary-title").text
+        titles.append(track_title)
+        #mix_type = x.find("span", class_="buk-track-remixed").text
+        #artists = [a for a in x.find("p", class_="buk-track-artists").findAll("a")]
+        #remixers = x.find(class_="buk-track-remixers").text
+        #labels = [l.text for l in x.find("p", class_="buk-track-labels").findAll("a")]
+        #released = x.find("p", class_="buk-track-released").text
+    return titles
+
 def scrape_chart(url):
     # Load the chart page
-    html=requests.get(url).content
-    bsObj=BeautifulSoup(html,'lxml')
-    # Parse each track
-    print("Parsing the tracks...")
-    tracks=split_to_tracks(bsObj)
-    # Find the track URLs
-    print("Finding the URLs of each track...")
-    urls=find_track_urls(bsObj)
-    for i,url in enumerate(urls):
-        tracks[i+1]["Track URL"]=url
-    print("Top Track:")
-    print(json.dumps(tracks[1],indent=4))
-    return tracks
+    r=requests.get(url)
+    if r.status_code==200:
+        html=r.content
+        bsObj=BeautifulSoup(html,'lxml')
+        # Parse each track
+        print("Parsing the tracks...")
+        tracks=split_to_tracks(bsObj)
+        # Find the track URLs
+        print("Finding the URLs of each track...")
+        urls=find_track_urls(bsObj)
+        # Find the track titles
+        titles=find_track_titles(bsObj)
+        for i,(url,title) in enumerate(zip(urls,titles)):
+            tracks[i+1]["Track URL"]=url
+            tracks[i+1]["Track Title"]=title
+        print("Top Track:")
+        print(json.dumps(tracks[1],indent=4))
+        return tracks
+    else:
+        print("Bad request!")
+        return []
+
 
 if __name__ == '__main__':
 
