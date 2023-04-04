@@ -17,7 +17,7 @@ from info import CRAWL_DIR
 
 DATE=dt.datetime.strftime(dt.datetime.now(),"%d_%m_%Y")
 HOME_URL="https://www.traxsource.com"
-NON_GENRES=["Sounds, Samples & Loops","DJ Tools","Acapella","Beats","Efx","Stems"]
+NON_GENRES=["sounds, samples & loops","dj tools","acapella","beats","efx","stems"]
 
 if __name__=="__main__":
 
@@ -43,7 +43,7 @@ if __name__=="__main__":
             genre=flt.text
             genre_url_ext=flt["href"]
             chart_url=HOME_URL+genre_url_ext+"/top"
-            if genre in NON_GENRES: # Some of them are not genres
+            if genre.lower() in NON_GENRES: # Some of them are not genres
                 continue
             print(f"\nRetrieving {genre} Top100 Chart metadata...")
             tracks=scrape_chart(chart_url)
