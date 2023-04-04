@@ -81,7 +81,7 @@ def scrape_chart(url):
     # Load the chart page
     r=requests.get(url)
     if r.status_code==200:
-        html = r.content
+        html=r.content
         bsObj=BeautifulSoup(html,'lxml')
         # Parse each track
         print("Parsing the tracks...")
