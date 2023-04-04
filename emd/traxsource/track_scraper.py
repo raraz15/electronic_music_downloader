@@ -55,51 +55,24 @@ def scrape_track(url):
 
 def get_preview(preview_query_url):
 
-    fields = [
-    "title_id",
-    "track_id",
-    "artist",
-    "title",
-    "title_url",
-    "track_url",
-    "label",
-    "genre",
-    "genre_url",
-    "catnumber",
-    "promo",
-    "duration",
-    "r_date",
-    "price",
-    "preorder",
-    "bought",
-    "image",
-    "thumb",
-    "mp3",
-    "waveform",
-    "bpm",
-    "keysig",
-    "hbr",
-    "wav",
-    ]
-
     r=requests.get(preview_query_url)
     if r.status_code==200:
         html=r.content
         bsObj=BeautifulSoup(html,features='xml')
         text = bsObj.data.string
-        # Clean the string to convert to dict
+        # Clean the string and get the url
         text = re.sub("\n", "", text)
         text = re.sub(r"\s\s+"," ", text)
         text = text[2:-2]
-        for field in fields:
-            text = re.sub(field+":", f'"{field}":', text)
-        dct = json.loads(text)
-        return dct["mp3"]
+        i = text.index("mp3: ")
+        text = text[i+len("mp3: "):]
+        i = text.index('", ')
+        text = text[:i+1]
+        return text[1:-1]
     else:
         print("Bad query.")
         return {}
 
-# TODO: Get the Preview mp3
 if __name__ == '__main__':
 
     parser=argparse.ArgumentParser(description='Traxsource Track Scraper')
